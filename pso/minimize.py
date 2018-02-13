@@ -1,7 +1,7 @@
 import functools as ft
 import numpy as np
-from .minimize import _conmin_pso
-from .utils import _gen_confunc
+from .minimize import uconmin_pso, conmin_pso
+from .utils import gen_confunc
 
 
 def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
@@ -43,13 +43,10 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
             friction: float, optional
                 Velocity is scaled by friction before updating, default 0.8.
-                    ``velocity = friction*velocity + dv_g + dv_l``
             g_rate: float, optional
                 Global learning rate, default 0.1.
-                    ``dv_g = g_rate * random(0, 1) * (gbest - current)``
             l_rate: float, optional
-                Local learning rate, default 0.1.
-                    ``dv_l = l_rate * random(0, 1) * (lbest - current)``
+                Local (or particle) learning rate, default 0.1.
             max_velocity: float, optional
                 Threshold for velocity, default 1.0.
             max_iter: int, optional
@@ -75,8 +72,9 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
         The optimization result represented as a OptimizeResult object.
 
     ==> need to add notes, references, examples
-        --> Document extra parameters in OptimizeResult
-        --> Explain method used for convergence.
+        --> Explain method used for constrained.
+        --> Explain method used for unconstrained.
+        --> Explain how to execute the faster model.
     """
     x0 = np.asarray(x0)
     if x0.dtype.kind in np.typecodes["AllInteger"]:
@@ -92,9 +90,9 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     fun_ = ft.update_wrapper(lambda x: fun(x, *args), fun)
 
     if constraints:
-        confunc = _gen_confunc(constraints, sttol, eqtol)
-        result = _conmin_pso(fun_, x0, confunc, **options)
+        confunc = gen_confunc(constraints, sttol, eqtol)
+        result = conmin_pso(fun_, x0, confunc, **options)
     else:
-        result = None
+        result = uconmin_pso(fun_, x0, **options)
 
     return result
