@@ -3,8 +3,8 @@ from scipy.spatial import distance
 
 
 def _pso(fun, x0, confunc=None, friction=.8, g_rate=.1, l_rate=.1,
-         max_velocity=1., max_iter=1e5, stable_iter=1e4, ptol=1e-8,
-         callback=None):
+         max_velocity=1., max_iter=1e5, stable_iter=1e4, ptol=1e-5,
+         ctol=1e-5, callback=None):
     """Internal function to minimize the objective function through PSO.
 
     See Also
@@ -44,9 +44,9 @@ def _pso(fun, x0, confunc=None, friction=.8, g_rate=.1, l_rate=.1,
 
         # Update the local and global bests.
         position += velocity
-        to_update = (np.apply_along_axis(fun, 1, position) > fun(lbest))
+        to_update = (np.apply_along_axis(fun, 1, position) < fun(lbest))
         if confunc:
-            to_update &= (confunc(position).sum(axis=1) < ptol)
+            to_update &= (confunc(position).sum(axis=1) < ctol)
 
         if to_update.any():
             lbest[to_update] = position[to_update]

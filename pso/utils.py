@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def convert_constraints(constraints, sttol=1e-6, eqtol=1e-7):
+def _gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     """Convert the list of constraints to a function that returns the
     constraint matrix when run on a solution vector.
 

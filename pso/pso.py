@@ -1,7 +1,7 @@
 import functools as ft
 import numpy as np
 from .minimize import _pso
-from .utils import convert_constraints
+from .utils import _gen_confunc
 
 
 def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
@@ -57,9 +57,11 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
             stable_iter: int, optional
                 Number of iterations to wait before Swarm is declared stable,
                 default 1000.
-            ptol: int, optional
+            ptol: float, optional
                 Change in position should be greater than ``ptol`` to update,
                 otherwise particle is considered stable, default 1e-5.
+            ctol: float, optional
+                Acceptable error in constraint satisfaction, default 1e-5.
             sttol : float, optional
                 Tolerance to convert strict inequalities to non-strict
                 inequalities, default 1e-6.
@@ -80,13 +82,15 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     if tol is not None:
         options.setdefault('ptol', tol)
+        options.setdefault('ctol', tol)
+
         sttol = options.pop('sttol', tol)
         eqtol = options.pop('eqtol', tol)
 
     if constraints:
-        confunc = convert_constraints(constraints, sttol, eqtol)
+        confunc = _gen_confunc(constraints, sttol, eqtol)
     else:
         confunc = None
 
     fun_ = ft.update_wrapper(lambda x: fun(x, *args), fun)
-    return _pso(fun_, x0, args, confunc, **options)
+    return _pso(fun_, x0, confunc, **options)
