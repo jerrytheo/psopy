@@ -94,6 +94,19 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     ... )
     >>> confunc = gen_confunc(constraints, sttol=0.001, eqtol=0.0001)
 
+    To test the function, generate a test position matrix and run the function
+    on this test matrix.
+
+    >>> test_pos = np.array([
+    ...     [ 0.3,  0.7],
+    ...     [-0.4,  1.4],
+    ...     [ 0.4,  0.4],
+    ... ])
+    >>> confunc(test_pos)
+    array([[ 0.    ,  0.    ,  0.    ,  0.    ,  0.    ,  0.    ],
+           [ 0.4   ,  0.    ,  0.    ,  0.401 ,  0.    ,  0.    ],
+           [ 0.    ,  0.    ,  0.    ,  0.    ,  0.    ,  0.1999]])
+
     """
 
     funlist = []
