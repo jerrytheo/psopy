@@ -26,13 +26,13 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
     ----------
     fun : callable
         The objective function to be minimized. Must be in the form
-        ``fun(pos, *args)``. The optimizing argument, ``x``, is a 2-D array for
-        initial positions, where each row specifies the position of a different
+        ``fun(pos, *args)``. The argument ``pos``, is a 2-D array for initial
+        positions, where each row specifies the position of a different
         particle, and ``args`` is a tuple of any additional fixed parameters
         needed to completely specify the function.
     confunc : callable
-        The function constructed by check_constraints. Should return the
-        constraint matrix.
+        The function that describes constraints. Must be of the form
+        ``confunc(pos)`` that returns the constraint matrix.
 
     Notes
     -----

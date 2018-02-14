@@ -95,10 +95,8 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     See Also
     --------
-    `psopy.minimize_pso` : The SciPy compatible interface to this function. It
-        includes the rest of the documentation for this function.
-    `psopy.gen_confunc` : Utility function to convert SciPy style constraints
-        to the form required by this function.
+    `psopy._minimize_pso` : The internal implementation for PSO used by this
+        function. May be a little faster to use directly.
 
     Notes
     -----
@@ -155,6 +153,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     >>> x0 = np.random.uniform(0, 2, (1000, 5))
     >>> res = minimize_pso(fun, x0, options={'stable_iter': 50})
     >>> res.x
+    array([ 1.,  1.,  1.,  1.,  1.])
 
     """
     x0 = np.asarray(x0)
