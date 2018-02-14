@@ -1,18 +1,20 @@
 import functools as ft
 import numpy as np
-from .minimize import uconmin_pso, conmin_pso
-from .utils import gen_confunc
+
+from pso import _minimize_pso
+from constraints import gen_confunc
 
 
 def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
                  options=None):
-    """Minimize the scalar function through particle swarm optimization.
+    """Minimization of scalar function of one or more variables using Particle
+    Swarm Optimization (PSO).
 
     Parameters
     ----------
     fun : callable
         The objective function to be minimized. Must be in the form
-        ``f(x, *args)``. The optimizing argument, ``x``, is a 1-D array of
+        ``fun(x, *args)``. The optimizing argument, ``x``, is a 1-D array of
         points, and ``args`` is a tuple of any additional fixed parameters
         needed to completely specify the function.
     x0 : array_like of shape (N, D)
@@ -68,13 +70,92 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     Returns
     -------
-    res : scipy.optimize.OptimizeResult
-        The optimization result represented as a OptimizeResult object.
+    result : scipy.optimize.OptimizeResult
+        The optimization result represented as a `OptimizeResult` object. The
+        following keys are supported,
 
-    ==> need to add notes, references, examples
-        --> Explain method used for constrained.
-        --> Explain method used for unconstrained.
-        --> Explain how to execute the faster model.
+            x : array_like
+                The solution vector.
+            success : bool
+                Whether or not the algorithm successfully converged.
+            status : int
+                Termination status. 0 if successful, 1 if max. iterations
+                reached, 2 if constraints cannot be satisfied.
+            message : str
+                Description of the cause of termination.
+            nit : int
+                Number of iterations performed by the swarm.
+            nsit : int
+                Maximum number of iterations for which the algorithm remained
+                stable.
+            fun : float
+                Value of objective function for x.
+            cvec : float
+                The constraint vector for x. (only when constraints specified)
+
+    See Also
+    --------
+    `psopy.minimize_pso` : The SciPy compatible interface to this function. It
+        includes the rest of the documentation for this function.
+    `psopy.gen_confunc` : Utility function to convert SciPy style constraints
+        to the form required by this function.
+
+    Notes
+    -----
+    Particle Swarm Optimization (PSO) [1]_ is a biologically inspired
+    metaheuristic for finding the global minima of a function. It works by
+    iteratively converging a population of randomly initialized solutions,
+    called particles, toward a globally optimal solution. Each particle in the
+    population keeps track of its current position and the best solution it has
+    encountered, called ``pbest``. Each particle has an associated
+    velocity used to traverse the search space. The swarm keeps track of the
+    overall best solution, called ``gbest``. Each iteration of the swarm
+    updates the velocity of the particle toward a weighted sum of the ``pbest``
+    and ``gbest``. The velocity of the particle is then added to the position
+    of the particle.
+
+    Shi and Eberhart [2]_ describe using an inertial weight, or a friction
+    parameter, to balance the effect of the global and local search. This acts
+    as a limiting factor to ensure velocity does not increase, or decrease,
+    unbounded.
+
+    ** Constrained Optimization **
+
+    The standard PSO algorithm does not guarantee that the individual solutions
+    will converge to a feasible global solution. To solve this, each particle
+    selects another particle, called the leader and uses this particle's
+    ``pbest`` value instead of its own to update its velocity. The leader for
+    a given particle is selected by picking the particle whose ``pbest`` is
+    closest to the current position of the given particle. Further, ``pbest``
+    is updated only those particles where the sum of the constraint vector is
+    less than the constraint tolerance.
+
+    References
+    ----------
+    .. [1] Eberhart, R. and Kennedy, J., 1995, October. A new optimizer using
+        particle swarm theory. In Micro Machine and Human Science, 1995.
+        MHS'95., Proceedings of the Sixth International Symposium on (pp.
+        39-43). IEEE.
+    .. [2] Shi, Y. and Eberhart, R., 1998, May. A modified particle swarm
+        optimizer. In Evolutionary Computation Proceedings, 1998. IEEE World
+        Congress on Computational Intelligence., The 1998 IEEE International
+        Conference on (pp. 69-73). IEEE.
+    .. [3] Cite our paper and add reference.
+
+    Examples
+    --------
+    Let us consider the problem of minimizing the Rosenbrock function,
+    implemented as `scipy.optimize.rosen`.
+
+    >>> import numpy as np
+    >>> from scipy.optimize import rosen
+
+    Initialize 1000 particles and run the minimization function.
+
+    >>> x0 = np.random.uniform(0, 2, (1000, 5))
+    >>> res = minimize_pso(fun, x0, options={'stable_iter': 50})
+    >>> res.x
+
     """
     x0 = np.asarray(x0)
     if x0.dtype.kind in np.typecodes["AllInteger"]:
@@ -87,12 +168,16 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
         sttol = options.pop('sttol', tol)
         eqtol = options.pop('eqtol', tol)
 
-    fun_ = ft.update_wrapper(lambda x: fun(x, *args), fun)
+    fun_ = ft.update_wrapper(
+        lambda x: np.apply_along_axis(fun, 1, x, *args), fun)
+
+    if callback is not None:
+        options['callback'] = ft.update_wrapper(
+            lambda x: np.apply_along_axis(callback, 1, x), callback)
 
     if constraints:
         confunc = gen_confunc(constraints, sttol, eqtol)
-        result = conmin_pso(fun_, x0, confunc, **options)
     else:
-        result = uconmin_pso(fun_, x0, **options)
+        confunc = None
 
-    return result
+    return _minimize_pso(fun_, x0, confunc, **options)
