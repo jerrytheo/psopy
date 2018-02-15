@@ -5,14 +5,17 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     """Convert the list of constraints to a function that returns the
     constraint matrix when run on the position matrix.
 
-    Strict inequalities of the form ``g(x) <= 0`` are converted to non-strict
-    inequalities ``g(x) + sttol <= 0``.
+    Strict inequalities of the form ``g(x) > 0`` are converted to non-strict
+    inequalities ``-g(x) + sttol <= 0``.
 
     Equality constraints of the form ``g(x) = 0`` are converted to a pair of
     inequality constraints::
 
          g(x) - eqtol <= 0
         -g(x) - eqtol <= 0
+
+    Further, since SciPy uses inequality constraints of the form ``g(x) >= 0``,
+    these are converted to ``-g(x) <= 0`` as required by `psopy._minimize_pso`.
 
     Parameters
     ----------
@@ -21,8 +24,10 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
         fields:
 
             type : str
-                Constraint type: ‘eq’ for equality, 'stin' for strict
-                inequality, ‘ineq’ for inequality.
+                Constraint type. `scipy.optimize.minimize` defines ‘eq’ for
+                equality and ‘ineq’ for inequality. Additionally, we define
+                'stin' for strict inequality and 'ltineq' for less-than
+                non-strict inequality.
             fun : callable
                 The function defining the constraint.
             args : sequence, optional
@@ -46,13 +51,14 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     Notes
     -----
     Ray and Liew [1]_ describe a representation for nonstrict inequality
-    constraints when optimizing using a particle swarm. However, strict
-    inequality and equality constraints need to be converted to non-strict
-    inequalities. Introducing the tolerance `sttol` converts strict
-    inequality constraints and `eqtol` converts the equality constraints by
-    wrapping over the corresponding function ``fun``. Thus, if the origial
-    problem contained ``q`` inequality and ``r`` equality constraints, we now
-    have ``s = q + 2r`` constraints specified by these wrapped functions.
+    constraints of the form ``g(x) <= 0`` when optimizing using a particle
+    swarm. However, strict inequality and equality constraints need to be
+    converted to non-strict inequalities. Introducing the tolerance `sttol`
+    converts strict inequality constraints and `eqtol` converts the equality
+    constraints by wrapping over the corresponding function ``fun``. Thus, if
+    the origial problem contained ``q`` inequality and ``r`` equality
+    constraints, we now have ``s = q + 2r`` constraints specified by these
+    wrapped functions.
 
     The returned function `check_constraints` takes the position matrix and
     returns the constraint matrix where the element at ``(i,j)`` is given by::
@@ -63,9 +69,15 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     the ``i``th position vector.
 
     This function is primarily for use within `pso.minimize_pso` to convert
-    SciPy style constraints to the technique used in this implementation. There
-    may be some overhead during execution due to the recursive function call
-    used to implement the conversion.
+    SciPy style specified as::
+
+        g_j(x) >= 0,  i = 1,...,q
+        h_k(x)  = 0,  j = 1,...,r
+
+    to the form used in this implementation. We define an additional constraint
+    type 'stin' for convenient representation of strict inequalities of the
+    form `g(x) > 0`. There may be some overhead during execution due to the
+    recursive function call used to implement the conversion.
 
     References
     ----------
@@ -86,10 +98,10 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     using,
 
     >>> constraints = (
-    ...     {'type': 'ineq', 'fun': lambda x: -x[0]},
-    ...     {'type': 'ineq', 'fun': lambda x: -x[1]},
-    ...     {'type': 'stin', 'fun': lambda x: x[0] - 1},
-    ...     {'type': 'stin', 'fun': lambda x: x[0] - 1},
+    ...     {'type': 'ineq', 'fun': lambda x: x[0]},
+    ...     {'type': 'ineq', 'fun': lambda x: x[1]},
+    ...     {'type': 'stin', 'fun': lambda x: 1 - x[0]},
+    ...     {'type': 'stin', 'fun': lambda x: 1 - x[1]},
     ...     {'type': 'eq', 'fun': lambda x: x[0] + x[1]}
     ... )
     >>> confunc = gen_confunc(constraints, sttol=0.001, eqtol=0.0001)
@@ -126,23 +138,22 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
             ))
 
         elif con['type'] == 'ineq':
-            funlist.append(
-                lambda x, fun=fun, args=args: np.max((fun(x, *args), 0))
-            )
+            funlist.append(lambda x, fun=fun, args=args: np.max((
+                -fun(x, *args), 0)))
 
         elif con['type'] == 'stin':
-            funlist.append(
-                lambda x, fun=fun, args=args: np.max((
-                    sttol + fun(x, *args), 0))
-            )
+            funlist.append(lambda x, fun=fun, args=args: np.max((
+                -fun(x, *args) + sttol, 0)))
+
+        elif con['type'] == 'ltineq':
+            funlist.append(lambda x, fun=fun, args=args: np.max((
+                fun(x, *args), 0)))
 
     def _check(x):
         """Run the functions defined in funlist for x."""
-        for f in funlist:
-            print(f(x))
         return np.array([f(x) for f in funlist])
 
-    def check_constraints(points):
+    def confunc(points):
         """Returns the constraint matrix for the given set of points.
 
         Each constraint is of the form ``g(x) <= 0``. The element at ``(i,j)``,
@@ -164,4 +175,4 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
         """
         return np.apply_along_axis(_check, axis=1, arr=points)
 
-    return check_constraints
+    return confunc

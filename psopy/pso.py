@@ -11,7 +11,7 @@ _status_message = {
 
 
 def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
-                  g_rate=.8, l_rate=.5, max_iter=10000, stable_iter=1000,
+                  g_rate=.8, l_rate=.5, max_iter=1000, stable_iter=100,
                   ptol=1e-5, ctol=1e-5, callback=None):
     """Internal implementation for `minimize_pso`.
 
@@ -75,7 +75,7 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
 
         # Determine the velocity gradients.
         dv_g = g_rate * np.random.uniform(0, 1) * (gbest - position)
-        if confunc:
+        if confunc is not None:
             leaders = np.argmin(
                 distance.cdist(position, pbest, 'sqeuclidean'), axis=1)
             dv_l = l_rate * \
@@ -91,7 +91,7 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
         # Update the local and global bests.
         position += velocity
         to_update = (fun(position) < fun(pbest))
-        if confunc:
+        if confunc is not None:
             to_update &= (confunc(position).sum(axis=1) < ctol)
 
         if to_update.any():
@@ -110,10 +110,10 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
             stable_count = 0
 
         # Final callback.
-        if callback:
+        if callback is not None:
             position = callback(position)
 
-    if confunc and confunc(gbest).sum() < ctol:
+    if confunc is not None and confunc(gbest[None]).sum() > ctol:
         status = 1
         message = _status_message['conviol']
     if ii == max_iter:
@@ -123,14 +123,11 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
         status = 0
         message = _status_message['success']
 
-    digits = int(-np.log10(ptol))
-    best = np.round(gbest, digits)
-    fun_ = np.round(fun(gbest[None])[0], digits)
+    result = OptimizeResult(x=gbest, fun=fun(gbest[None])[0], status=status,
+                            message=message, nit=ii, nsit=stable_max,
+                            success=(not status))
 
-    result = OptimizeResult(x=best, status=status, message=message, nit=ii,
-                            nsit=stable_max, fun=fun_, success=(not status))
-
-    if confunc:
+    if confunc is not None:
         result.cvec = confunc(gbest[None])
 
     return result

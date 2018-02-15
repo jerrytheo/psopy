@@ -148,24 +148,52 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     >>> import numpy as np
     >>> from scipy.optimize import rosen
 
-    Initialize 1000 particles and run the minimization function.
+    Initialize 1000 particles and run the minimization function:
 
     >>> x0 = np.random.uniform(0, 2, (1000, 5))
     >>> res = minimize_pso(fun, x0, options={'stable_iter': 50})
     >>> res.x
     array([ 1.,  1.,  1.,  1.,  1.])
 
+    Next, we consider a minimization problem with several constraints. The
+    objective function is:
+
+    >>> fun = lambda x: (x[0] - 1)**2 + (x[1] - 2.5)**2
+
+    The constraints defined as:
+
+    >>> cons = ({'type': 'ineq', 'fun': lambda x:  x[0] - 2 * x[1] + 2},
+    ...         {'type': 'ineq', 'fun': lambda x: -x[0] - 2 * x[1] + 6},
+    ...         {'type': 'ineq', 'fun': lambda x: -x[0] + 2 * x[1] + 2},
+    ...         {'type': 'ineq', 'fun': lambda x: -x[0]},
+    ...         {'type': 'ineq', 'fun': lambda x: -x[1]})
+    cons = ({'type': 'ineq', 'fun': lambda x:  x[0] - 2 * x[1] + 2},
+            {'type': 'ineq', 'fun': lambda x: -x[0] - 2 * x[1] + 6},
+            {'type': 'ineq', 'fun': lambda x: -x[0] + 2 * x[1] + 2},
+            {'type': 'ineq', 'fun': lambda x: -x[0]},
+            {'type': 'ineq', 'fun': lambda x: -x[1]})
+
+    Running the constrained version:
+
+    >>> minimize_pso(fun, x0, constrainsts=cons)
+
     """
     x0 = np.asarray(x0)
     if x0.dtype.kind in np.typecodes["AllInteger"]:
         x0 = np.asarray(x0, dtype=float)
 
+    if not isinstance(args, tuple):
+        args = (args,)
+
+    if not options:
+        options = {}
+
+    conargs = {}
     if tol is not None:
         options.setdefault('ptol', tol)
         options.setdefault('ctol', tol)
-
-        sttol = options.pop('sttol', tol)
-        eqtol = options.pop('eqtol', tol)
+        conargs['sttol'] = options.pop('sttol', tol)
+        conargs['eqtol'] = options.pop('eqtol', tol)
 
     fun_ = ft.update_wrapper(
         lambda x: np.apply_along_axis(fun, 1, x, *args), fun)
@@ -175,8 +203,6 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
             lambda x: np.apply_along_axis(callback, 1, x), callback)
 
     if constraints:
-        confunc = gen_confunc(constraints, sttol, eqtol)
-    else:
-        confunc = None
+        options['confunc'] = gen_confunc(constraints, **conargs)
 
-    return _minimize_pso(fun_, x0, confunc, **options)
+    return _minimize_pso(fun_, x0, **options)
