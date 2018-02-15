@@ -29,10 +29,9 @@ setup(
     version='0.0.1a1',
     description='A SciPy compatible super fast Python implementation for '
                 'Particle Swarm Optimization. ',
-    long_description='%s\n%s' % (
+    long_description='%s' % (
         re.compile('^.. start-badges.*^.. end-badges',
-                   re.M | re.S).sub('', read('README.rst')),
-        re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))
+                   re.M | re.S).sub('', read('README.rst'))
     ),
     author='Abhijit Theophilus, Dr. Snehanshu Saha, Suryoday Basak',
     author_email='abhijit.theo@gmail.com, snehanshusaha@gmail.com, '

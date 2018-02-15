@@ -102,7 +102,7 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     ...     {'type': 'ineq', 'fun': lambda x: x[1]},
     ...     {'type': 'stin', 'fun': lambda x: 1 - x[0]},
     ...     {'type': 'stin', 'fun': lambda x: 1 - x[1]},
-    ...     {'type': 'eq', 'fun': lambda x: x[0] + x[1]}
+    ...     {'type': 'eq', 'fun': lambda x: x[0] + x[1] - 1}
     ... )
     >>> confunc = gen_confunc(constraints, sttol=0.001, eqtol=0.0001)
 
@@ -176,3 +176,68 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
         return np.apply_along_axis(_check, axis=1, arr=points)
 
     return confunc
+
+
+def init_feasible_x0(constraints, shape, low=0., high=1., max_retries=500):
+    """Initialize a set of points that satisfy a set of constraints.
+
+    Works by randomly resampling all those points that do not satisfy all
+    constraints. May be really slow if feasible region is small or sparse.
+    Resampling method used makes it highly unlikely to work for equality
+    constraints.
+
+    Points are sampled from the uniform distribution ``U(low, high)``.
+
+    Parameters
+    ----------
+    constraints : tuple
+        Constraints definition. Each constraint is defined in a dictionary with
+        fields `type`, `fun` and `args`. If empty, this function is identical
+        to `np.random.uniform(low, high, size=shape)`.
+    shape : tuple of ints
+        Shape of output array.
+    low : float or array_like of floats, optional
+        Lower boundary of the output interval, default 0.
+    high : float or array_like of floats, optional
+        Upper boundary of the output interval, default 1.
+    max_retries : int, optional
+        Number of times to resample infeasible solutions.
+
+    See Also
+    --------
+    `psopy.get_confunc` : Converts the constraint definition to a constraint
+        function. It documents the detailed structure of the constraint
+        definition dictionary.
+
+    Returns
+    -------
+    out : ndarray or None
+        Drawn samples from the uniform distribution that satisfy all
+        constraints or `None` if unable to satisfy constraints within
+        `max_retries`.
+
+    Examples
+    --------
+    Consider the constraints ``x + y <= 1``, where ``0 <= x, y <= 1``.
+    Initializing 5 points to satisfy these constraints,
+
+    >>> constraints = (
+    ...     {'type': 'ineq', 'fun': lambda x: 1 - (x[0] + x[1])}
+    ... )
+    >>> points = init_x0(constraints=constraints,
+                         shape=(5, 2), low=0., high=1.)
+
+    """
+    out = np.random.uniform(low, high, size=shape)
+    if constraints:
+        cfunc = gen_confunc(constraints)
+        condn = (cfunc(out).sum(1) != 0)
+        retry = max_retries
+
+        while condn.any():
+            out[condn] = np.random.uniform(low, high, out[condn].shape)
+            condn = (cfunc(out).sum(1) != 0)
+            retry -= 1
+            if not retry:
+                return None
+    return out

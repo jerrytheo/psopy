@@ -49,10 +49,12 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
     These examples are identical to those laid out in `psopy.minimize_pso` and
     serve to illustrate the additional overhead in ensuring compatibility.
 
+    >>> import numpy as np
+    >>> from psopy import _minimize_pso
+
     Consider the problem of minimizing the Rosenbrock function implemented as
     `scipy.optimize.rosen`.
 
-    >>> import numpy as np
     >>> from scipy.optimize import rosen
     >>> fun = lambda x: np.apply_along_axis(rosen, 1, x)
 
@@ -61,7 +63,34 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
     >>> x0 = np.random.uniform(0, 2, (1000, 5))
     >>> res = _minimize_pso(fun, x0, stable_iter=50)
     >>> res.x
-    array([ 1.,  1.,  1.,  1.,  1.])
+    array([1.00000003, 1.00000017, 1.00000034, 1.0000006 , 1.00000135])
+
+    Consider the constrained optimization problem with the objective function
+    defined as:
+
+    >>> fun = lambda x: (x[0] - 1)**2 + (x[1] - 2.5)**2
+    >>> fun_ = lambda x: np.apply_along_axis(fun, 1, x)
+
+    and constraints defined as:
+
+    >>> cons = ({'type': 'ineq', 'fun': lambda x:  x[0] - 2 * x[1] + 2},
+    ...         {'type': 'ineq', 'fun': lambda x: -x[0] - 2 * x[1] + 6},
+    ...         {'type': 'ineq', 'fun': lambda x: -x[0] + 2 * x[1] + 2},
+    ...         {'type': 'ineq', 'fun': lambda x: x[0]},
+    ...         {'type': 'ineq', 'fun': lambda x: x[1]})
+
+    Initializing the constraint function and feasible solutions:
+
+    >>> from psopy import init_feasible_x0, gen_confunc
+    >>> x0 = init_feasible_x0(cons, low=0., high=2., shape=(1000, 2))
+    >>> confunc = gen_confunc(cons)
+
+    Running the constrained version of the function:
+
+    >>> res = _minimize_pso(fun_, x0, confunc=confunc, options={
+    ...     'g_rate': 1., 'l_rate': 1., 'max_velocity': 4., 'stable_iter': 50})
+    >>> res.x
+    array([ 1.39985398,  1.69992748])
 
     """
     # Initialization.

@@ -1,5 +1,6 @@
 import numpy as np
-from psopy import minimize_pso, gen_confunc
+from psopy import init_feasible_x0
+from psopy import minimize_pso
 from scipy.optimize import rosen
 
 
@@ -20,14 +21,9 @@ class TestQuick:
                 {'type': 'ineq', 'fun': lambda x: -x[0] + 2 * x[1] + 2},
                 {'type': 'ineq', 'fun': lambda x: x[0]},
                 {'type': 'ineq', 'fun': lambda x: x[1]})
-        cfunc = gen_confunc(cons)
-        condn = (cfunc(x0).sum(1) != 0)
-        while condn.any():
-            x0[condn] = np.random.uniform(0, 2, x0[condn].shape)
-            condn = (cfunc(x0).sum(1) != 0)
+        x0 = init_feasible_x0(cons, low=0, high=2, shape=(1000, 2))
         options = {'g_rate': 1., 'l_rate': 1., 'max_velocity': 4.,
                    'stable_iter': 50}
-
         sol = np.array([1.4, 1.7])
         res = minimize_pso(lambda x: (x[0] - 1)**2 + (x[1] - 2.5)**2, x0,
                            constraints=cons, options=options)

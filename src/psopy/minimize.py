@@ -1,7 +1,7 @@
 import functools as ft
 import numpy as np
 
-from .pso import _minimize_pso
+from .internal import _minimize_pso
 from .constraints import gen_confunc
 
 
@@ -22,19 +22,23 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
         and ``D`` the dimensionality of each point.
     args : tuple, optional
         Extra arguments passed to the objective function.
-    constraints : tuple, optional
+    constraints : tuple
         Constraints definition. Each constraint is defined in a dictionary with
         fields:
 
             type : str
-                Constraint type: ‘eq’ for equality, ‘ineq’ for inequality.
+                Constraint type. `scipy.optimize.minimize` defines ‘eq’ for
+                equality and ‘ineq’ for inequality. Additionally, we define
+                'stin' for strict inequality and 'ltineq' for less-than
+                non-strict inequality.
             fun : callable
                 The function defining the constraint.
             args : sequence, optional
                 Extra arguments to be passed to the function.
 
-        Equality constraint means that the constraint function result is to be
-        zero whereas inequality means that it is to be non-negative.
+        Equality constraints require the constraint function result to be zero,
+        strict inequality require it to be negative and inequality require it
+        to be non-positive.
     tol : float, optional
         Tolerance for termination and constraint adjustment. For detailed
         control, use options.
@@ -46,11 +50,11 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
             friction: float, optional
                 Velocity is scaled by friction before updating, default 0.8.
             g_rate: float, optional
-                Global learning rate, default 0.5.
+                Global learning rate, default 0.8.
             l_rate: float, optional
                 Local (or particle) learning rate, default 0.5.
             max_velocity: float, optional
-                Threshold for velocity, default 2.0.
+                Threshold for velocity, default 5.0.
             max_iter: int, optional
                 Maximum iterations to wait for convergence, default 1000.
             stable_iter: int, optional
@@ -58,9 +62,9 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
                 default 100.
             ptol: float, optional
                 Change in position should be greater than ``ptol`` to update,
-                otherwise particle is considered stable, default 1e-5.
+                otherwise particle is considered stable, default 1e-6.
             ctol: float, optional
-                Acceptable error in constraint satisfaction, default 1e-5.
+                Acceptable error in constraint satisfaction, default 1e-6.
             sttol : float, optional
                 Tolerance to convert strict inequalities to non-strict
                 inequalities, default 1e-6.
@@ -95,8 +99,10 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     See Also
     --------
-    `psopy._minimize_pso` : The internal implementation for PSO used by this
-        function. May be a little faster to use directly.
+    `psopy._minimize_pso` : Internal implementation for PSO. May be faster to
+        use directly.
+    `psopy.gen_confunc` : Converts the constraints definition to a function
+        that returns the constraint matrix when run on the position matrix.
 
     Notes
     -----
@@ -154,7 +160,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     >>> x0 = np.random.uniform(0, 2, (1000, 5))
     >>> res = minimize_pso(rosen, x0, options={'stable_iter': 50})
     >>> res.x
-    array([ 1.,  1.,  1.,  1.,  1.])
+    array([1.00000003, 1.00000017, 1.00000034, 1.0000006 , 1.00000135])
 
     Next, we consider a minimization problem with several constraints. The
     objective function is:
@@ -169,12 +175,21 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     ...         {'type': 'ineq', 'fun': lambda x: x[0]},
     ...         {'type': 'ineq', 'fun': lambda x: x[1]})
 
-    Running the constrained version:
+    The intial positions for constrained optimization must adhere to the
+    constraints imposed by the problem. This can be ensured using the provided
+    function `psopy.init_feasible_x0`. Note, there are several caveats
+    regarding the use of this function. Consult its documentation for more
+    information.
 
-    >>> x0 = np.random.uniform(0, 2, (1000, 2))
+    >>> from psopy import init_feasible_x0
+    >>> x0 = init_feasible_x0(cons, low=0., high=2., shape=(1000, 2))
+
+    Running the constrained version of the function:
+
     >>> res = minimize_pso(fun, x0, constrainsts=cons, options={
     ...     'g_rate': 1., 'l_rate': 1., 'max_velocity': 4., 'stable_iter': 50})
     >>> res.x
+    array([ 1.39985398,  1.69992748])
 
     """
     x0 = np.asarray(x0)
