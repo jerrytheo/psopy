@@ -12,7 +12,7 @@ _status_message = {
 
 def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
                   g_rate=.8, l_rate=.5, max_iter=1000, stable_iter=100,
-                  ptol=1e-5, ctol=1e-5, callback=None):
+                  ptol=1e-6, ctol=1e-6, callback=None):
     """Internal implementation for `minimize_pso`.
 
     See Also
@@ -24,6 +24,10 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
 
     Parameters
     ----------
+    x0 : array_like of shape (N, D)
+        Initial position to begin PSO from, where ``N`` is the number of points
+        and ``D`` the dimensionality of each point. For the constrained case
+        these points should satisfy all constraints.
     fun : callable
         The objective function to be minimized. Must be in the form
         ``fun(pos, *args)``. The argument ``pos``, is a 2-D array for initial
@@ -116,7 +120,7 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
     if confunc is not None and confunc(gbest[None]).sum() > ctol:
         status = 1
         message = _status_message['conviol']
-    if ii == max_iter:
+    elif ii == max_iter:
         status = 2
         message = _status_message['maxiter']
     else:

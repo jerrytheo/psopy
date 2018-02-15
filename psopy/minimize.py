@@ -1,8 +1,8 @@
 import functools as ft
 import numpy as np
 
-from pso import _minimize_pso
-from constraints import gen_confunc
+from .pso import _minimize_pso
+from .constraints import gen_confunc
 
 
 def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
@@ -46,16 +46,16 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
             friction: float, optional
                 Velocity is scaled by friction before updating, default 0.8.
             g_rate: float, optional
-                Global learning rate, default 0.1.
+                Global learning rate, default 0.5.
             l_rate: float, optional
-                Local (or particle) learning rate, default 0.1.
+                Local (or particle) learning rate, default 0.5.
             max_velocity: float, optional
-                Threshold for velocity, default 1.0.
+                Threshold for velocity, default 2.0.
             max_iter: int, optional
-                Maximum iterations to wait for convergence, default 10000.
+                Maximum iterations to wait for convergence, default 1000.
             stable_iter: int, optional
                 Number of iterations to wait before Swarm is declared stable,
-                default 1000.
+                default 100.
             ptol: float, optional
                 Change in position should be greater than ``ptol`` to update,
                 otherwise particle is considered stable, default 1e-5.
@@ -146,12 +146,13 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     implemented as `scipy.optimize.rosen`.
 
     >>> import numpy as np
+    >>> from psopy import minimize_pso
     >>> from scipy.optimize import rosen
 
     Initialize 1000 particles and run the minimization function:
 
     >>> x0 = np.random.uniform(0, 2, (1000, 5))
-    >>> res = minimize_pso(fun, x0, options={'stable_iter': 50})
+    >>> res = minimize_pso(rosen, x0, options={'stable_iter': 50})
     >>> res.x
     array([ 1.,  1.,  1.,  1.,  1.])
 
@@ -165,17 +166,15 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     >>> cons = ({'type': 'ineq', 'fun': lambda x:  x[0] - 2 * x[1] + 2},
     ...         {'type': 'ineq', 'fun': lambda x: -x[0] - 2 * x[1] + 6},
     ...         {'type': 'ineq', 'fun': lambda x: -x[0] + 2 * x[1] + 2},
-    ...         {'type': 'ineq', 'fun': lambda x: -x[0]},
-    ...         {'type': 'ineq', 'fun': lambda x: -x[1]})
-    cons = ({'type': 'ineq', 'fun': lambda x:  x[0] - 2 * x[1] + 2},
-            {'type': 'ineq', 'fun': lambda x: -x[0] - 2 * x[1] + 6},
-            {'type': 'ineq', 'fun': lambda x: -x[0] + 2 * x[1] + 2},
-            {'type': 'ineq', 'fun': lambda x: -x[0]},
-            {'type': 'ineq', 'fun': lambda x: -x[1]})
+    ...         {'type': 'ineq', 'fun': lambda x: x[0]},
+    ...         {'type': 'ineq', 'fun': lambda x: x[1]})
 
     Running the constrained version:
 
-    >>> minimize_pso(fun, x0, constrainsts=cons)
+    >>> x0 = np.random.uniform(0, 2, (1000, 2))
+    >>> res = minimize_pso(fun, x0, constrainsts=cons, options={
+    ...     'g_rate': 1., 'l_rate': 1., 'max_velocity': 4., 'stable_iter': 50})
+    >>> res.x
 
     """
     x0 = np.asarray(x0)
