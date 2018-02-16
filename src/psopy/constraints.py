@@ -15,7 +15,7 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
         -g(x) - eqtol <= 0
 
     Further, since SciPy uses inequality constraints of the form ``g(x) >= 0``,
-    these are converted to ``-g(x) <= 0`` as required by `psopy._minimize_pso`.
+    these are converted to ``-g(x) <= 0`` as required by `psopy.pswarmopt`.
 
     Parameters
     ----------

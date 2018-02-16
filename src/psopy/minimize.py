@@ -1,7 +1,7 @@
 import functools as ft
 import numpy as np
 
-from .internal import _minimize_pso
+from .internal import pswarmopt
 from .constraints import gen_confunc
 
 
@@ -99,8 +99,8 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     See Also
     --------
-    `psopy._minimize_pso` : Internal implementation for PSO. May be faster to
-        use directly.
+    `psopy.pswarmopt` : Internal implementation for PSO. May be faster to use
+        directly.
     `psopy.gen_confunc` : Converts the constraints definition to a function
         that returns the constraint matrix when run on the position matrix.
 
@@ -219,4 +219,4 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     if constraints:
         options['confunc'] = gen_confunc(constraints, **conargs)
 
-    return _minimize_pso(fun_, x0, **options)
+    return pswarmopt(fun_, x0, **options)

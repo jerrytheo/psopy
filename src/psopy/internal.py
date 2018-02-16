@@ -10,9 +10,9 @@ _status_message = {
 }
 
 
-def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
-                  g_rate=.8, l_rate=.5, max_iter=1000, stable_iter=100,
-                  ptol=1e-6, ctol=1e-6, callback=None):
+def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
+              g_rate=.8, l_rate=.5, max_iter=1000, stable_iter=100,
+              ptol=1e-6, ctol=1e-6, callback=None):
     """Internal implementation for `minimize_pso`.
 
     See Also
@@ -50,7 +50,7 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
     serve to illustrate the additional overhead in ensuring compatibility.
 
     >>> import numpy as np
-    >>> from psopy import _minimize_pso
+    >>> from psopy import pswarmopt
 
     Consider the problem of minimizing the Rosenbrock function implemented as
     `scipy.optimize.rosen`.
@@ -61,7 +61,7 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
     Initialize 1000 particles and run the minimization function.
 
     >>> x0 = np.random.uniform(0, 2, (1000, 5))
-    >>> res = _minimize_pso(fun, x0, stable_iter=50)
+    >>> res = pswarmopt(fun, x0, stable_iter=50)
     >>> res.x
     array([1.00000003, 1.00000017, 1.00000034, 1.0000006 , 1.00000135])
 
@@ -87,7 +87,7 @@ def _minimize_pso(fun, x0, confunc=None, friction=.8, max_velocity=5.,
 
     Running the constrained version of the function:
 
-    >>> res = _minimize_pso(fun_, x0, confunc=confunc, options={
+    >>> res = pswarmopt(fun_, x0, confunc=confunc, options={
     ...     'g_rate': 1., 'l_rate': 1., 'max_velocity': 4., 'stable_iter': 50})
     >>> res.x
     array([ 1.39985398,  1.69992748])
