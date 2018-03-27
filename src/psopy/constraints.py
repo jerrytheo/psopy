@@ -1,3 +1,20 @@
+"""
+constraints.py - Utilities for Handling Constraints
+===================================================
+
+Utilities for dealing with constraints.
+
+Functions
+---------
+
+::
+
+gen_confunc                     -- Generate the constraint function.
+init_feasible                   -- Initialize feasible solutions from the
+                                   uniform distribution
+
+"""
+
 import numpy as np
 
 
@@ -43,10 +60,10 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
 
     Returns
     -------
-    check_constraints : callable
-        When called with the particle positions, `check_constraints(x)` returns
-        the constraint matrix where the element at `(i,j)` indicates the extent
-        to which solution `i` violates constraint `j`.
+    confunc : callable
+        When called with the particle positions, `confunc(x)` returns the
+        constraint matrix where the element at `(i,j)` indicates the extent to
+        which solution `i` violates constraint `j`.
 
     Notes
     -----
@@ -178,7 +195,7 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     return confunc
 
 
-def init_feasible_x0(constraints, shape, low=0., high=1., max_retries=500):
+def init_feasible(constraints, shape, low=0., high=1., max_retries=500):
     """Initialize a set of points that satisfy a set of constraints.
 
     Works by randomly resampling all those points that do not satisfy all

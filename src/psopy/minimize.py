@@ -1,3 +1,22 @@
+"""
+minimize.py - SciPy Compatible PSO Solver for Minimization
+==========================================================
+
+The wrapper for `psopy.pswarmopt` that mimics the interface of
+`scipy.optimize.minimize`, excluding the `method` parameter. Constraints and
+options are specified exactly as specified for `scipy.optimize.minimize`.
+`psopy.gen_confunc` takes care of converting these constraints to functions as
+required by the implementation.
+
+Functions
+---------
+
+::
+
+minimize_pso                    -- SciPy compatible interface to `pswarmopt`.
+
+"""
+
 import functools as ft
 import numpy as np
 
@@ -177,12 +196,11 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     The intial positions for constrained optimization must adhere to the
     constraints imposed by the problem. This can be ensured using the provided
-    function `psopy.init_feasible_x0`. Note, there are several caveats
-    regarding the use of this function. Consult its documentation for more
-    information.
+    function `psopy.init_feasible`. Note, there are several caveats regarding
+    the use of this function. Consult its documentation for more information.
 
-    >>> from psopy import init_feasible_x0
-    >>> x0 = init_feasible_x0(cons, low=0., high=2., shape=(1000, 2))
+    >>> from psopy import init_feasible
+    >>> x0 = init_feasible(cons, low=0., high=2., shape=(1000, 2))
 
     Running the constrained version of the function:
 

@@ -1,3 +1,24 @@
+"""
+internal.py - Internal Implementation for PSO
+=============================================
+
+The actual implementation of the Particle Swarm Optimization solver.
+`psopy.minimize_pso` calls the function `psopy.pswarmopt` defined here to
+minimize the specified fitness function. Using this function directly allows
+for a slightly faster implementation that does away with the need for the
+additional recursive calls needed to wrap the constraint and objective
+functions for compatibility with `scipy.optimize.minimize`.
+
+Functions
+---------
+
+::
+
+pswarmopt                       -- Perform constrained or unconstrained
+                                   Particle Swarm Optimization
+
+"""
+
 import numpy as np
 from scipy.spatial import distance
 from scipy.optimize import OptimizeResult
@@ -81,8 +102,8 @@ def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
 
     Initializing the constraint function and feasible solutions:
 
-    >>> from psopy import init_feasible_x0, gen_confunc
-    >>> x0 = init_feasible_x0(cons, low=0., high=2., shape=(1000, 2))
+    >>> from psopy import init_feasible, gen_confunc
+    >>> x0 = init_feasible(cons, low=0., high=2., shape=(1000, 2))
     >>> confunc = gen_confunc(cons)
 
     Running the constrained version of the function:

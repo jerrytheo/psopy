@@ -1,5 +1,5 @@
 import numpy as np
-from psopy import init_feasible_x0
+from psopy import init_feasible
 from psopy import minimize_pso
 from scipy.optimize import rosen
 
@@ -21,7 +21,7 @@ class TestQuick:
                 {'type': 'ineq', 'fun': lambda x: -x[0] + 2 * x[1] + 2},
                 {'type': 'ineq', 'fun': lambda x: x[0]},
                 {'type': 'ineq', 'fun': lambda x: x[1]})
-        x0 = init_feasible_x0(cons, low=0, high=2, shape=(1000, 2))
+        x0 = init_feasible(cons, low=0, high=2, shape=(1000, 2))
         options = {'g_rate': 1., 'l_rate': 1., 'max_velocity': 4.,
                    'stable_iter': 50}
         sol = np.array([1.4, 1.7])
