@@ -6,7 +6,11 @@ from scipy.optimize import rosen
 
 class TestQuick:
 
+    """Quick simple tests for early validation."""
+
     def test_unconstrained(self):
+        """Test against the Rosenbrock function."""
+
         x0 = np.random.uniform(0, 2, (1000, 5))
         sol = np.array([1., 1., 1., 1., 1.])
         res = minimize_pso(rosen, x0)
@@ -15,7 +19,18 @@ class TestQuick:
         np.testing.assert_array_almost_equal(sol, res.x, 3)
 
     def test_constrained(self):
-        x0 = np.random.uniform(0, 2, (1000, 2))
+        """Test against the following function::
+
+            y = (x0 - 1)^2 + (x1 - 2.5)^2
+
+        under the constraints::
+
+             x0 - 2.x1 + 2 >= 0
+            -x0 - 2.x1 + 6 >= 0
+            -x0 + 2.x1 + 2 >= 0
+                    x0, x1 >= 0
+
+        """
         cons = ({'type': 'ineq', 'fun': lambda x:  x[0] - 2 * x[1] + 2},
                 {'type': 'ineq', 'fun': lambda x: -x[0] - 2 * x[1] + 6},
                 {'type': 'ineq', 'fun': lambda x: -x[0] + 2 * x[1] + 2},

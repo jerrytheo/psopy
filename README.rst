@@ -25,8 +25,8 @@ Authors
 License
 -------------------------------------------------------------------------------
 
-Licensed under the BSD 3-Clause License.
-Copyright 2018 Abhijit Theophilus, Snehanshu Saha, Suryoday Basak
+| Licensed under the BSD 3-Clause License.
+| Copyright 2018 Abhijit Theophilus, Snehanshu Saha, Suryoday Basak
 
 -------------------------------------------------------------------------------
 References
