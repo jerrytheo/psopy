@@ -17,9 +17,9 @@ slower in execution time, as the constraint and fitness functions are wrapped.
 Authors
 -------------------------------------------------------------------------------
 
-- Abhijit Jeremiel Theophilus, abhijit.theo@gmail.com
-- Dr\. Snehanshu Saha, snehanshusaha@pes.edu
-- Suryoday Basak, suryodaybasak@gmail.com
+- Abhijit Jeremiel Theophilus (abhijit.theo@gmail.com)
+- Dr\. Snehanshu Saha (snehanshusaha@pes.edu)
+- Suryoday Basak (suryodaybasak@gmail.com)
 
 -------------------------------------------------------------------------------
 License

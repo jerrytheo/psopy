@@ -1,6 +1,8 @@
 """PSOPy: Python implementation for Particle Swarm Optimization
 
-.. Add a description here
+PSOPy (pronounced "Soapy") is a SciPy compatible super fast Python
+implementation for Particle Swarm Optimization.
+
 """
 
 from __future__ import absolute_import
@@ -37,9 +39,9 @@ setup(
     author_email='abhijit.theo@gmail.com, snehanshusaha@gmail.com, '
                  'suryodaybasak@gmail.com',
     url='https://github.com/jerrytheo/psopy',
-    packages=find_packages('src'),
-    package_dir={'': 'src'},
-    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+    packages=find_packages('psopy'),
+    package_dir={'': 'psopy'},
+    py_modules=[splitext(basename(path))[0] for path in glob('psopy/*.py')],
     include_package_data=True,
     zip_safe=False,
 
@@ -75,7 +77,7 @@ setup(
     setup_requires=[
         'pytest-runner'
     ],
-    tests_requires=[
+    tests_require=[
         'pytest'
     ],
 )
