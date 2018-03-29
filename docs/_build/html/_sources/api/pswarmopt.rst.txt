@@ -1,4 +1,4 @@
-API Documentation
-=================
+pswarmopt
+=========
 
 .. autofunction:: psopy.pswarmopt

@@ -77,10 +77,10 @@ html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 # documentation.
 html_theme_options = {
     # Navigation bar title. (Default: ``project`` value)
-    'navbar_title': "PSOPy Docs",
+    'navbar_title': "PSOPy",
 
     # Tab name for entire site. (Default: "Site")
-    'navbar_site_name': "PSOPy",
+    'navbar_site_name': "PSOPy Docs",
 
     # A list of tuples containing pages or urls to link to.
     # Valid tuples should be in the following forms:
@@ -104,7 +104,7 @@ html_theme_options = {
 
     # Global TOC depth for "site" navbar tab. (Default: 1)
     # Switching to -1 shows all levels.
-    'globaltoc_depth': 2,
+    'globaltoc_depth': 3,
 
     # Include hidden TOCs in Site navbar?
     #
