@@ -72,8 +72,8 @@ def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
 
     Examples
     --------
-    These examples are identical to those laid out in `psopy.minimize_pso` and
-    serve to illustrate the additional overhead in ensuring compatibility.
+    These examples are identical to those laid out in ``psopy.minimize_pso``
+    and serve to illustrate the additional overhead in ensuring compatibility.
 
     >>> import numpy as np
     >>> from psopy import pswarmopt
@@ -282,7 +282,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
             fun : float
                 Value of objective function for x.
             cvec : float
-                The constraint vector for x. (only when constraints specified)
+                The constraint vector for x (only when constraints specified).
 
     See Also
     --------

@@ -1,0 +1,33 @@
+#sidebar {
+    list-style-type: none !important;
+}
+
+#sidebar > li {
+    padding-left: 20px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #FFFFFF;
+}
+
+body {
+    margin-bottom: 50px;
+}
+
+blockquote {
+    font-size: 15px;
+}
+
+.seealso {
+    background: #FFFFFF;
+    border: 1px solid #2c3e50;
+    color: #2c3e50;
+}
+
+pre {
+    background: #2c3e50 !important;
+    border: 1px solid #2c3e50 !important;
+}
