@@ -65,7 +65,7 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
 
     Notes
     -----
-    Ray and Liew [RL01]_ describe a representation for nonstrict inequality
+    Ray and Liew [1]_ describe a representation for nonstrict inequality
     constraints of the form ``g(x) <= 0`` when optimizing using a particle
     swarm. However, strict inequality and equality constraints need to be
     converted to non-strict inequalities. Introducing the tolerance `sttol`
@@ -96,10 +96,10 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
 
     References
     ----------
-    .. [RL01] Ray, T. and Liew, K.M., 2001. A swarm with an effective
-        information sharing mechanism for unconstrained and constrained single
-        objective optimisation problems. In Evolutionary Computation, 2001.
-        Proceedings of the 2001 Congress on (Vol. 1, pp. 75-80). IEEE.
+    .. [1] Ray, T. and Liew, K.M., 2001. A swarm with an effective information
+        sharing mechanism for unconstrained and constrained single objective
+        optimisation problems. In Evolutionary Computation, 2001. Proceedings
+        of the 2001 Congress on (Vol. 1, pp. 75-80). IEEE.
 
     Examples
     --------

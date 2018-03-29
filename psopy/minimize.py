@@ -3,20 +3,20 @@ minimize.py - SciPy Compatible PSO Solver for Minimization
 ==========================================================
 
 The implementation of the Particle Swarm Optimization solver. The function
-`psopy.minimize_pso` mimics the interface of `scipy.optimize.minimize`,
-excluding the `method` parameter.
+``psopy.minimize_pso`` mimics the interface of ``scipy.optimize.minimize``,
+excluding the ``method`` parameter.
 
-`psopy.minimize_pso` calls the function `psopy.pswarmopt` to actually perform
-the minimization. Using this function directly allows for a slightly faster
-implementation that does away with the need for additional recursive calls
-needed to translate the constraints and objective function into the required
-structure.
+``psopy.minimize_pso`` calls the function ``psopy.pswarmopt`` to actually
+perform the minimization. Using this function directly allows for a slightly
+faster implementation that does away with the need for additional recursive
+calls needed to translate the constraints and objective function into the
+required structure.
 
 =================== ===========================================================
 Functions
 ===============================================================================
 pswarmopt           Optimize under optional constraints using a particle swarm.
-minimize_pso        SciPy compatible interface to `pswarmopt`.
+minimize_pso        SciPy compatible interface to ``pswarmopt``.
 =================== ===========================================================
 
 """
@@ -39,7 +39,7 @@ _status_message = {
 def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
               g_rate=.8, l_rate=.5, max_iter=1000, stable_iter=100,
               ptol=1e-6, ctol=1e-6, callback=None):
-    """Internal implementation for `minimize_pso`.
+    """Internal implementation for ``minimize_pso``.
 
     See Also
     --------
@@ -79,7 +79,7 @@ def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
     >>> from psopy import pswarmopt
 
     Consider the problem of minimizing the Rosenbrock function implemented as
-    `scipy.optimize.rosen`.
+    ``scipy.optimize.rosen``.
 
     >>> from scipy.optimize import rosen
     >>> fun = lambda x: np.apply_along_axis(rosen, 1, x)
@@ -214,7 +214,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
         fields:
 
             type : str
-                Constraint type. `scipy.optimize.minimize` defines ‘eq’ for
+                Constraint type. ``scipy.optimize.minimize`` defines ‘eq’ for
                 equality and ‘ineq’ for inequality. Additionally, we define
                 'stin' for strict inequality and 'ltineq' for less-than
                 non-strict inequality.
@@ -234,23 +234,23 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     options : dict, optional
         A dictionary of solver options:
 
-            friction: float, optional
+            friction : float, optional
                 Velocity is scaled by friction before updating, default 0.8.
-            g_rate: float, optional
+            g_rate : float, optional
                 Global learning rate, default 0.8.
-            l_rate: float, optional
+            l_rate : float, optional
                 Local (or particle) learning rate, default 0.5.
-            max_velocity: float, optional
+            max_velocity : float, optional
                 Threshold for velocity, default 5.0.
-            max_iter: int, optional
+            max_iter : int, optional
                 Maximum iterations to wait for convergence, default 1000.
-            stable_iter: int, optional
+            stable_iter : int, optional
                 Number of iterations to wait before Swarm is declared stable,
                 default 100.
-            ptol: float, optional
+            ptol : float, optional
                 Change in position should be greater than ``ptol`` to update,
                 otherwise particle is considered stable, default 1e-6.
-            ctol: float, optional
+            ctol : float, optional
                 Acceptable error in constraint satisfaction, default 1e-6.
             sttol : float, optional
                 Tolerance to convert strict inequalities to non-strict
@@ -262,7 +262,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     Returns
     -------
     result : scipy.optimize.OptimizeResult
-        The optimization result represented as a `OptimizeResult` object. The
+        The optimization result represented as a ``OptimizeResult`` object. The
         following keys are supported,
 
             x : array_like
@@ -293,7 +293,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     Notes
     -----
-    Particle Swarm Optimization (PSO) [EK95]_ is a biologically inspired
+    Particle Swarm Optimization (PSO) [1]_ is a biologically inspired
     metaheuristic for finding the global minima of a function. It works by
     iteratively converging a population of randomly initialized solutions,
     called particles, toward a globally optimal solution. Each particle in the
@@ -305,7 +305,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     and ``gbest``. The velocity of the particle is then added to the position
     of the particle.
 
-    Shi and Eberhart [SE98]_ describe using an inertial weight, or a friction
+    Shi and Eberhart [2]_ describe using an inertial weight, or a friction
     parameter, to balance the effect of the global and local search. This acts
     as a limiting factor to ensure velocity does not increase, or decrease,
     unbounded.
@@ -313,8 +313,8 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     **Constrained Optimization**
 
     The standard PSO algorithm does not guarantee that the individual solutions
-    will converge to a feasible global solution. To solve this, <author name>
-    [TBD]_ suggested an approach where each particle selects another particle,
+    will converge to a feasible global solution. To solve this, Lorem and Ipsum
+    [3]_ suggested an approach where each particle selects another particle,
     called the leader and uses this particle's ``pbest`` value, instead of its
     own, to update its velocity. The leader for a given particle is selected by
     picking the particle whose ``pbest`` is closest to the current position of
@@ -324,20 +324,22 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     References
     ----------
-    .. [EK95] Eberhart, R. and Kennedy, J., 1995, October. A new optimizer
+    .. [1] Eberhart, R. and Kennedy, J., 1995, October. A new optimizer
         using particle swarm theory. In Micro Machine and Human Science, 1995.
         MHS'95., Proceedings of the Sixth International Symposium on (pp.
         39-43). IEEE.
-    .. [SE98] Shi, Y. and Eberhart, R., 1998, May. A modified particle swarm
+    .. [2] Shi, Y. and Eberhart, R., 1998, May. A modified particle swarm
         optimizer. In Evolutionary Computation Proceedings, 1998. IEEE World
         Congress on Computational Intelligence., The 1998 IEEE International
         Conference on (pp. 69-73). IEEE.
-    .. [TBD] Cite our paper and add reference.
+    .. [3] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
+        volutpat feugiat imperdiet. Phasellus placerat elit nec erat tristique
+        faucibus. Suspendisse at nunc odio. Nullam sagittis nunc ut sed.
 
     Examples
     --------
     Let us consider the problem of minimizing the Rosenbrock function,
-    implemented as `scipy.optimize.rosen`.
+    implemented as ``scipy.optimize.rosen``.
 
     >>> import numpy as np
     >>> from psopy import minimize_pso
@@ -365,7 +367,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     The intial positions for constrained optimization must adhere to the
     constraints imposed by the problem. This can be ensured using the provided
-    function `psopy.init_feasible`. Note, there are several caveats regarding
+    function ``psopy.init_feasible``. Note, there are several caveats regarding
     the use of this function. Consult its documentation for more information.
 
     >>> from psopy import init_feasible
