@@ -62,7 +62,7 @@ language = None
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'paraiso-dark'
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -153,7 +153,7 @@ html_static_path = ['_static']
 # html_sidebars = {}
 
 html_sidebars = {
-   '**': ['localtoc.html', 'myrelations.html', 'searchbox.html'],
+   '**': ['localtoc.html', 'relations.html', 'searchbox.html'],
 }
 html_show_sourcelink = False
 
