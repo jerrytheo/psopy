@@ -1,0 +1,177 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>API Documentation &#8212; PSOPy 0.0.1a1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Documentation" href="gen_confunc.html" />
+    <link rel="prev" title="API Documentation" href="minimize_pso.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="psopy.pswarmopt">
+<code class="descclassname">psopy.</code><code class="descname">pswarmopt</code><span class="sig-paren">(</span><em>fun</em>, <em>x0</em>, <em>confunc=None</em>, <em>friction=0.8</em>, <em>max_velocity=5.0</em>, <em>g_rate=0.8</em>, <em>l_rate=0.5</em>, <em>max_iter=1000</em>, <em>stable_iter=100</em>, <em>ptol=1e-06</em>, <em>ctol=1e-06</em>, <em>callback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#psopy.pswarmopt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal implementation for <cite>minimize_pso</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x0</strong> : array_like of shape (N, D)</p>
+<blockquote>
+<div><p>Initial position to begin PSO from, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of points
+and <code class="docutils literal notranslate"><span class="pre">D</span></code> the dimensionality of each point. For the constrained case
+these points should satisfy all constraints.</p>
+</div></blockquote>
+<p><strong>fun</strong> : callable</p>
+<blockquote>
+<div><p>The objective function to be minimized. Must be in the form
+<code class="docutils literal notranslate"><span class="pre">fun(pos,</span> <span class="pre">*args)</span></code>. The argument <code class="docutils literal notranslate"><span class="pre">pos</span></code>, is a 2-D array for initial
+positions, where each row specifies the position of a different
+particle, and <code class="docutils literal notranslate"><span class="pre">args</span></code> is a tuple of any additional fixed parameters
+needed to completely specify the function.</p>
+</div></blockquote>
+<p><strong>confunc</strong> : callable</p>
+<blockquote class="last">
+<div><p>The function that describes constraints. Must be of the form
+<code class="docutils literal notranslate"><span class="pre">confunc(pos)</span></code> that returns the constraint matrix.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="minimize_pso.html#psopy.minimize_pso" title="psopy.minimize_pso"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psopy.minimize_pso</span></code></a></dt>
+<dd>The SciPy compatible interface to this function. It includes the rest of the documentation for this function.</dd>
+<dt><a class="reference internal" href="gen_confunc.html#psopy.gen_confunc" title="psopy.gen_confunc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psopy.gen_confunc</span></code></a></dt>
+<dd>Utility function to convert SciPy style constraints to the form required by this function.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Using this function directly allows for a slightly faster implementation
+that does away with the need for the additional recursive calls needed to
+wrap the constraint and objective functions for compatibility with Scipy.</p>
+<p class="rubric">Examples</p>
+<p>These examples are identical to those laid out in <cite>psopy.minimize_pso</cite> and
+serve to illustrate the additional overhead in ensuring compatibility.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">psopy</span> <span class="k">import</span> <span class="n">pswarmopt</span>
+</pre></div>
+</div>
+<p>Consider the problem of minimizing the Rosenbrock function implemented as
+<cite>scipy.optimize.rosen</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">rosen</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">rosen</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Initialize 1000 particles and run the minimization function.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pswarmopt</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">stable_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">x</span>
+<span class="go">array([1.00000003, 1.00000017, 1.00000034, 1.0000006 , 1.00000135])</span>
+</pre></div>
+</div>
+<p>Consider the constrained optimization problem with the objective function
+defined as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fun_</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and constraints defined as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cons</span> <span class="o">=</span> <span class="p">({</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>  <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">6</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+</pre></div>
+</div>
+<p>Initializing the constraint function and feasible solutions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">psopy</span> <span class="k">import</span> <span class="n">init_feasible</span><span class="p">,</span> <span class="n">gen_confunc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">init_feasible</span><span class="p">(</span><span class="n">cons</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">confunc</span> <span class="o">=</span> <span class="n">gen_confunc</span><span class="p">(</span><span class="n">cons</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Running the constrained version of the function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pswarmopt</span><span class="p">(</span><span class="n">fun_</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">confunc</span><span class="o">=</span><span class="n">confunc</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;g_rate&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s1">&#39;l_rate&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s1">&#39;max_velocity&#39;</span><span class="p">:</span> <span class="mf">4.</span><span class="p">,</span> <span class="s1">&#39;stable_iter&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">x</span>
+<span class="go">array([ 1.39985398,  1.69992748])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../apidocs.html">API Documentation</a><ul>
+      <li>Previous: <a href="minimize_pso.html" title="previous chapter">API Documentation</a></li>
+      <li>Next: <a href="gen_confunc.html" title="next chapter">API Documentation</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Abhijit Theophilus, Snehanshu Saha, Suryoday Basak.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -42,6 +42,7 @@ release = '0.0.1a1'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
+    'numpydoc',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -99,6 +100,8 @@ html_static_path = ['_static']
 # 'searchbox.html']``.
 #
 # html_sidebars = {}
+
+html_show_sourcelink = False
 
 
 # -- Options for HTMLHelp output ---------------------------------------------
