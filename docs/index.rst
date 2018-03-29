@@ -12,9 +12,10 @@ implementation for Particle Swarm Optimization. The codes are tested for
 standard optimization test functions (both constrained and unconstrained).
 
 The library provides two implementations, one that mimics the interface to
-`scipy.optimize.minimize` and one that directly runs PSO. The SciPy compatible
-function is a wrapper over the direct implementation, and therefore may be
-slower in execution time, as the constraint and fitness functions are wrapped.
+``scipy.optimize.minimize`` and one that directly runs PSO. The SciPy
+compatible function is a wrapper over the direct implementation, and therefore
+may be slower in execution time, as the constraint and fitness functions are
+wrapped.
 
 -------------------------------------------------------------------------------
 Contents

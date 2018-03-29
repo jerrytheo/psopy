@@ -6,7 +6,7 @@ Unconstrained Optimization
 ==========================
 
 Consider the problem of minimizing the Rosenbrock function, implemented as
-`scipy.optimize.rosen` using a swarm of 1000 particles.
+``scipy.optimize.rosen`` using a swarm of 1000 particles.
 
 >>> import numpy as np
 >>> from psopy import minimize_pso
@@ -22,7 +22,7 @@ Constrained Optimization
 Next, we consider a minimization problem with several constraints. The intial
 positions for constrained optimization must adhere to the constraints imposed
 by the problem. This can be ensured using the provided function
-`psopy.init_feasible`. Note, there are several caveats regarding the use of
+``psopy.init_feasible``. Note, there are several caveats regarding the use of
 this function. Consult its documentation for more information.
 
 >>> # The objective function.
