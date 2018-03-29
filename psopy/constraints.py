@@ -220,7 +220,7 @@ def init_feasible(constraints, shape, low=0., high=1., max_retries=500):
 
     See Also
     --------
-    `psopy.get_confunc` : Converts the constraint definition to a constraint
+    psopy.get_confunc : Converts the constraint definition to a constraint
         function. It documents the detailed structure of the constraint
         definition dictionary.
 

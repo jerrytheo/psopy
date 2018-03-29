@@ -43,9 +43,9 @@ def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
 
     See Also
     --------
-    `psopy.minimize_pso` : The SciPy compatible interface to this function. It
+    psopy.minimize_pso : The SciPy compatible interface to this function. It
         includes the rest of the documentation for this function.
-    `psopy.gen_confunc` : Utility function to convert SciPy style constraints
+    psopy.gen_confunc : Utility function to convert SciPy style constraints
         to the form required by this function.
 
     Parameters
@@ -286,9 +286,9 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     See Also
     --------
-    `psopy.pswarmopt` : Internal implementation for PSO. May be faster to use
+    psopy.pswarmopt : Internal implementation for PSO. May be faster to use
         directly.
-    `psopy.gen_confunc` : Converts the constraints definition to a function
+    psopy.gen_confunc : Converts the constraints definition to a function
         that returns the constraint matrix when run on the position matrix.
 
     Notes
@@ -310,7 +310,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
     as a limiting factor to ensure velocity does not increase, or decrease,
     unbounded.
 
-    ** Constrained Optimization **
+    **Constrained Optimization**
 
     The standard PSO algorithm does not guarantee that the individual solutions
     will converge to a feasible global solution. To solve this, <author name>

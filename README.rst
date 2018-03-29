@@ -4,6 +4,10 @@ PSOPy
 
     A python implementation of Particle Swarm Optimization.
 
+-------------------------------------------------------------------------------
+Introduction
+-------------------------------------------------------------------------------
+
 PSOPy (pronounced "Soapy") is a SciPy compatible super fast Python
 implementation for Particle Swarm Optimization. The codes are tested for
 standard optimization test functions (both constrained and unconstrained).
@@ -17,7 +21,29 @@ slower in execution time, as the constraint and fitness functions are wrapped.
 Installation
 -------------------------------------------------------------------------------
 
+GitHub
+======
+
+To install this library from GitHub,
+
+.. code-block:: bash
+
+    $ git clone https://github.com/jerrytheo/psopy.git
+    $ cd psopy
+    $ python setup.py install
+
+In order to run the tests,
+
+.. code-block:: bash
+
+    $ python setup.py test
+
+PyPI
+====
+
 This library is available on the PyPI as psopy. If you have pip installed run,
+
+.. code-block:: bash
 
     $ pip install psopy
 
@@ -67,7 +93,7 @@ array([ 1.39985398,  1.69992748])
 Authors
 -------------------------------------------------------------------------------
 
-- Abhijit Jeremiel Theophilus (abhijit.theo@gmail.com)
+- Abhijit Theophilus (abhijit.theo@gmail.com)
 - Dr\. Snehanshu Saha (snehanshusaha@pes.edu)
 - Suryoday Basak (suryodaybasak@gmail.com)
 
