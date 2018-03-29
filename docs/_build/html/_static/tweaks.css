@@ -1,0 +1,22 @@
+#sidebar {
+    list-style-type: none !important;
+}
+
+#sidebar > li {
+    padding-left: 20px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #FFFFFF;
+}
+
+body {
+    margin-bottom: 50px;
+}
+
+/* .form-control {
+    padding-left: 3px;
+} */

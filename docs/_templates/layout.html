@@ -1,0 +1,27 @@
+{# Import the theme's layout. #}
+{% extends "!layout.html" %}
+
+{% block sidebar1 %}
+{% endblock %}
+
+{% block sidebar2 %}
+  <div class="col-md-3">
+    <div id="sidebar" class="bs-sidenav" role="complementary">
+      {%- for sidebartemplate in sidebars %} {%- include sidebartemplate %} {%- endfor %}
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block footer %}
+  <footer class="footer">
+    <div class="container">
+      <p class="pull-right">
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+      </p>
+      <p>
+        &copy; Copyright {{ copyright }}.
+      </p>
+    </div>
+  </footer>
+{% endblock %}

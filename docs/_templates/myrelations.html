@@ -1,0 +1,15 @@
+{%- if prev %}
+<li>
+  <a href="{{ prev.link|e }}" title="{{ _('Previous Chapter: ') + prev.title|striptags }}">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+    <span class="hidden-sm hidden-tablet">{{ prev.title|striptags|truncate(length=16, killwords=True) }}</span>
+  </a>
+</li>
+{%- endif %} {%- if next %}
+<li>
+  <a href="{{ next.link|e }}" title="{{ _('Next Chapter: ') + next.title|striptags }}">
+    <span class="glyphicon glyphicon-chevron-right"></span>
+    <span class="hidden-sm hidden-tablet">{{ next.title|striptags|truncate(length=16, killwords=True) }}</span>
+  </a>
+</li>
+{%- endif %}

@@ -62,7 +62,7 @@ language = None
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'lovelace'
+pygments_style = 'sphinx'
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -130,11 +130,12 @@ html_theme_options = {
     # Bootswatch (http://bootswatch.com/) theme.
     # - Bootstrap 2: https://bootswatch.com/2
     # - Bootstrap 3: https://bootswatch.com/3
-    'bootswatch_theme': "cosmo",
+    'bootswatch_theme': "flatly",
 
     # Choose Bootstrap version.
     # Values: "3" (default) or "2" (in quotes)
     'bootstrap_version': "3",
+
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -151,6 +152,9 @@ html_static_path = ['_static']
 # 'searchbox.html']``.
 # html_sidebars = {}
 
+html_sidebars = {
+   '**': ['localtoc.html', 'myrelations.html', 'searchbox.html'],
+}
 html_show_sourcelink = False
 
 
@@ -208,3 +212,7 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
+
+
+def setup(app):
+    app.add_stylesheet("tweaks.css")  # also can be a full URL
