@@ -21,16 +21,14 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     constraint matrix when run on the position matrix.
 
     Strict inequalities of the form ``g(x) > 0`` are converted to non-strict
-    inequalities ``-g(x) + sttol <= 0``.
-
-    Equality constraints of the form ``g(x) = 0`` are converted to a pair of
-    inequality constraints::
+    inequalities ``-g(x) + sttol <= 0``. Equality constraints of the form
+    ``g(x) = 0`` are converted to a pair of inequality constraints::
 
          g(x) - eqtol <= 0
         -g(x) - eqtol <= 0
 
     Further, since SciPy uses inequality constraints of the form ``g(x) >= 0``,
-    these are converted to ``-g(x) <= 0`` as required by `psopy.pswarmopt`.
+    these are converted to ``-g(x) <= 0`` as required by ``psopy.pswarmopt``.
 
     Parameters
     ----------
@@ -39,8 +37,8 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
         fields:
 
             type : str
-                Constraint type. `scipy.optimize.minimize` defines ‘eq’ for
-                equality and ‘ineq’ for inequality. Additionally, we define
+                Constraint type. ``scipy.optimize.minimize`` defines 'eq' for
+                equality and 'ineq' for inequality. Additionally, we define
                 'stin' for strict inequality and 'ltineq' for less-than
                 non-strict inequality.
             fun : callable
@@ -59,31 +57,31 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     Returns
     -------
     confunc : callable
-        When called with the particle positions, `confunc(x)` returns the
-        constraint matrix where the element at `(i,j)` indicates the extent to
-        which solution `i` violates constraint `j`.
+        When called with the particle positions, ``confunc(x)`` returns the
+        constraint matrix where the element at ``(i,j)`` indicates the extent
+        to which solution ``i`` violates constraint ``j``.
 
     Notes
     -----
     Ray and Liew [1]_ describe a representation for nonstrict inequality
     constraints of the form ``g(x) <= 0`` when optimizing using a particle
     swarm. However, strict inequality and equality constraints need to be
-    converted to non-strict inequalities. Introducing the tolerance `sttol`
-    converts strict inequality constraints and `eqtol` converts the equality
+    converted to non-strict inequalities. Introducing the tolerance ``sttol``
+    converts strict inequality constraints and ``eqtol`` converts the equality
     constraints by wrapping over the corresponding function ``fun``. Thus, if
     the origial problem contained ``q`` inequality and ``r`` equality
     constraints, we now have ``s = q + 2r`` constraints specified by these
     wrapped functions.
 
-    The returned function `check_constraints` takes the position matrix and
+    The returned function ``check_constraints`` takes the position matrix and
     returns the constraint matrix where the element at ``(i,j)`` is given by::
 
         C_ij = max(g'_j(x_i), 0)
 
     where, ``g'_j`` is the wrapped function for constraint ``j``, ``x_i`` is
-    the ``i``th position vector.
+    the ``i`` th position vector.
 
-    This function is primarily for use within `pso.minimize_pso` to convert
+    This function is primarily for use within ``pso.minimize_pso`` to convert
     SciPy style specified as::
 
         g_j(x) >= 0,  i = 1,...,q
@@ -91,7 +89,7 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
 
     to the form used in this implementation. We define an additional constraint
     type 'stin' for convenient representation of strict inequalities of the
-    form `g(x) > 0`. There may be some overhead during execution due to the
+    form ``g(x) > 0``. There may be some overhead during execution due to the
     recursive function call used to implement the conversion.
 
     References
