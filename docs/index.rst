@@ -10,7 +10,8 @@ Welcome to PSOPy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   Introduction <../README>
+   apidocs
 
 Indices and tables
 ==================
