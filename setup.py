@@ -28,7 +28,7 @@ def read(*names, **kwargs):
 
 setup(
     name='psopy',
-    version='0.1.1b1',
+    version='0.1.1b3',
     description='A SciPy compatible super fast Python implementation for '
                 'Particle Swarm Optimization. ',
     long_description='%s' % (
@@ -39,27 +39,23 @@ setup(
     author_email='abhijit.theo@gmail.com, snehanshusaha@gmail.com, '
                  'suryodaybasak@gmail.com',
     url='https://github.com/jerrytheo/psopy',
-    packages=find_packages('psopy'),
-    package_dir={'': 'psopy'},
+    packages=find_packages(),
     py_modules=[splitext(basename(path))[0] for path in glob('psopy/*.py')],
     include_package_data=True,
     zip_safe=False,
 
     # Classifiers list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Mathematics',
         'License :: OSI Approved :: BSD License',
+
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
         'Operating System :: Unix',
 
-        # To be done later ...(Need to add support for Python 2.)
-        # Specify the Python versions you support here. In particular, ensure
-        # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
+        # Supported Python versions.
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
