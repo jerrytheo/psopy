@@ -28,7 +28,7 @@ def read(*names, **kwargs):
 
 setup(
     name='psopy',
-    version='0.1.1b3',
+    version='0.1.1b4',
     description='A SciPy compatible super fast Python implementation for '
                 'Particle Swarm Optimization. ',
     long_description='%s' % (
