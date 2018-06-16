@@ -397,6 +397,9 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
         options.setdefault('ctol', tol)
         conargs['sttol'] = options.pop('sttol', tol)
         conargs['eqtol'] = options.pop('eqtol', tol)
+    else:
+        conargs['sttol'] = options.pop('sttol', 1e-6)
+        conargs['eqtol'] = options.pop('eqtol', 1e-7)
 
     fun_ = ft.update_wrapper(
         lambda x: np.apply_along_axis(fun, 1, x, *args), fun)
