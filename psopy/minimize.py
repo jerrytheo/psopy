@@ -6,7 +6,7 @@ The implementation of the Particle Swarm Optimization solver. The function
 ``psopy.minimize_pso`` mimics the interface of ``scipy.optimize.minimize``,
 excluding the ``method`` parameter.
 
-``psopy.minimize_pso`` calls the function ``psopy.pswarmopt`` to actually
+``psopy.minimize`` calls the function ``psopy._minimize_pso`` to actually
 perform the minimization. Using this function directly allows for a slightly
 faster implementation that does away with the need for additional recursive
 calls needed to translate the constraints and objective function into the
@@ -15,36 +15,40 @@ required structure.
 =================== ===========================================================
 Functions
 ===============================================================================
-pswarmopt           Optimize under optional constraints using a particle swarm.
-minimize_pso        SciPy compatible interface to ``pswarmopt``.
+_minimize_pso       Optimize under optional constraints using a particle swarm.
+minimize            SciPy compatible interface to ``_minimize_pso``.
 =================== ===========================================================
 
 """
 
+from collections import namedtuple
 import functools as ft
 import numpy as np
+from numpy.random import uniform
 from scipy.spatial import distance
 from scipy.optimize import OptimizeResult
 
 from .constraints import gen_confunc
 
-_status_message = {
-    'success': 'Optimization terminated successfully.',
-    'maxiter': 'Maximum number of iterations has been exceeded.',
-    'conviol': 'Unable to satisfy constraints at end of iterations.',
-    'pr_loss': 'Desired error not necessarily achieved due to precision loss.'
-}
+
+STATUS_MESSAGES = namedtuple(
+    'StatusMessage', ['success', 'maxiter', 'violation', 'precloss'])(
+        'Optimization terminated successfully.',
+        'Maximum number of iterations has been exceeded.',
+        'Unable to satisfy constraints at end of iterations.',
+        'Desired error not necessarily achieved due to precision loss.')
 
 
-def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
-              g_rate=.8, l_rate=.5, max_iter=1000, stable_iter=100,
-              ptol=1e-6, ctol=1e-6, callback=None):
-    """Internal implementation for ``minimize_pso``.
+def _minimize_pso(
+        fun, x0, confunc=None, friction=.8, max_velocity=5., g_rate=.8,
+        l_rate=.5, max_iter=1000, stable_iter=100, ptol=1e-6, ctol=1e-6,
+        callback=None, verbose=False, savefile=None):
+    """Internal implementation for ``psopy.minimize``.
 
     See Also
     --------
-    psopy.minimize_pso : The SciPy compatible interface to this function. It
-        includes the rest of the documentation for this function.
+    psopy.minimize : The SciPy compatible interface to this function. Refer to
+        its documentation for an explanation of the parameters.
     psopy.gen_confunc : Utility function to convert SciPy style constraints
         to the form required by this function.
 
@@ -76,7 +80,7 @@ def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
     and serve to illustrate the additional overhead in ensuring compatibility.
 
     >>> import numpy as np
-    >>> from psopy import pswarmopt
+    >>> from psopy import _minimize_pso
 
     Consider the problem of minimizing the Rosenbrock function implemented as
     ``scipy.optimize.rosen``.
@@ -87,7 +91,7 @@ def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
     Initialize 1000 particles and run the minimization function.
 
     >>> x0 = np.random.uniform(0, 2, (1000, 5))
-    >>> res = pswarmopt(fun, x0, stable_iter=50)
+    >>> res = _minimize_pso(fun, x0, stable_iter=50)
     >>> res.x
     array([1.00000003, 1.00000017, 1.00000034, 1.0000006 , 1.00000135])
 
@@ -113,41 +117,35 @@ def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
 
     Running the constrained version of the function:
 
-    >>> res = pswarmopt(fun_, x0, confunc=confunc, options={
+    >>> res = _minimize_pso(fun_, x0, confunc=confunc, options={
     ...     'g_rate': 1., 'l_rate': 1., 'max_velocity': 4., 'stable_iter': 50})
     >>> res.x
     array([ 1.39985398,  1.69992748])
 
     """
-    # Initialization.
     position = np.copy(x0)
     velocity = np.random.uniform(-max_velocity, max_velocity, position.shape)
-
     pbest = np.copy(position)
     gbest = pbest[np.argmin(fun(pbest))]
-
-    stable_max = 0
     stable_count = 0
-    for ii in range(max_iter):
-        # Store for threshold comparison.
-        gbest_fit = fun(gbest[None])[0]
 
-        # Determine the velocity gradients.
-        dv_g = g_rate * np.random.uniform(0, 1) * (gbest - position)
+    for ii in range(max_iter):
+        oldfit = fun(gbest[None])[0]
+
+        # Determine global and local gradient.
+        dv_g = g_rate * uniform(0, 1) * (gbest - position)
         if confunc is not None:
             leaders = np.argmin(
                 distance.cdist(position, pbest, 'sqeuclidean'), axis=1)
-            dv_l = l_rate * \
-                np.random.uniform(0, 1) * (pbest[leaders] - position)
+            dv_l = l_rate * uniform(0, 1) * (pbest[leaders] - position)
         else:
-            dv_l = l_rate * np.random.uniform(0, 1) * (pbest - position)
+            dv_l = l_rate * uniform(0, 1) * (pbest - position)
 
-        # Update velocity and clip.
+        # Update velocity and position of particles.
         velocity *= friction
         velocity += (dv_g + dv_l)
         np.clip(velocity, -max_velocity, max_velocity, out=velocity)
 
-        # Update the local and global bests.
         position += velocity
         to_update = (fun(position) < fun(pbest))
         if confunc is not None:
@@ -158,42 +156,41 @@ def pswarmopt(fun, x0, confunc=None, friction=.8, max_velocity=5.,
             gbest = pbest[np.argmin(fun(pbest))]
 
         # Termination criteria.
-        if np.abs(gbest_fit - fun(gbest[None])[0]) < ptol:
+        if np.abs(oldfit - fun(gbest[None])[0]) < ptol:
             stable_count += 1
             if stable_count == stable_iter:
-                stable_max = stable_count
                 break
         else:
-            if stable_count > stable_max:
-                stable_max = stable_count
             stable_count = 0
 
         # Final callback.
         if callback is not None:
             position = callback(position)
 
-    if confunc is not None and confunc(gbest[None]).sum() > ctol:
-        status = 1
-        message = _status_message['conviol']
-    elif ii == max_iter:
-        status = 2
-        message = _status_message['maxiter']
-    else:
-        status = 0
-        message = _status_message['success']
+    result = OptimizeResult(
+        x=gbest, fun=fun(gbest[None])[0], nit=ii, nsit=stable_count)
 
-    result = OptimizeResult(x=gbest, fun=fun(gbest[None])[0], status=status,
-                            message=message, nit=ii, nsit=stable_max,
-                            success=(not status))
-
+    violation = False
     if confunc is not None:
-        result.cvec = confunc(gbest[None])
+        convec = confunc(gbest[None])
+        result.maxcv = np.max(convec)
+        result.cvec = convec
+        if convec.sum() > ctol:
+            violation = True
 
+    if violation:
+        result.status = 2
+    elif ii == max_iter:
+        result.status = 1
+    else:
+        result.status = 0
+
+    result.success = not result.status
     return result
 
 
-def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
-                 options=None):
+def minimize(fun, x0, args=(), constraints=(), tol=None, callback=None,
+             options=None):
     """Minimization of scalar function of one or more variables using Particle
     Swarm Optimization (PSO).
 
@@ -227,7 +224,7 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
         strict inequality require it to be negative and inequality require it
         to be non-positive.
     tol : float, optional
-        Tolerance for termination and constraint adjustment. For detailed
+        Tolerance for termination and constraint adjustment. For granular
         control, use options.
     callback : callable, optional
         Called after each iteration on each solution vector.
@@ -258,6 +255,12 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
             eqtol : float, optional
                 Tolerance to convert equalities to non-strict inequalities,
                 default 1e-7.
+            verbose : bool, optional
+                Set True to display convergence messages.
+            savefile : string or None, optional
+                File to save global best solution vector and its corresponding
+                function value for each iteration as a csv file. If None, no
+                data is saved.
 
     Returns
     -------
@@ -277,16 +280,18 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
             nit : int
                 Number of iterations performed by the swarm.
             nsit : int
-                Maximum number of iterations for which the algorithm remained
-                stable.
+                Most recent number of iterations for which the algorithm
+                remained stable.
             fun : float
                 Value of objective function for x.
             cvec : float
                 The constraint vector for x (only when constraints specified).
+            maxcv : float
+                The maximum constraint violation.
 
     See Also
     --------
-    psopy.pswarmopt : Internal implementation for PSO. May be faster to use
+    psopy._minimize_pso : Internal implementation for PSO. May be faster to use
         directly.
     psopy.gen_confunc : Converts the constraints definition to a function
         that returns the constraint matrix when run on the position matrix.
@@ -386,20 +391,19 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
         x0 = np.asarray(x0, dtype=float)
 
     if not isinstance(args, tuple):
-        args = (args,)
+        args = args,
 
     if not options:
         options = {}
 
-    conargs = {}
     if tol is not None:
         options.setdefault('ptol', tol)
         options.setdefault('ctol', tol)
-        conargs['sttol'] = options.pop('sttol', tol)
-        conargs['eqtol'] = options.pop('eqtol', tol)
+        sttol = options.pop('sttol', tol)
+        eqtol = options.pop('eqtol', tol)
     else:
-        conargs['sttol'] = options.pop('sttol', 1e-6)
-        conargs['eqtol'] = options.pop('eqtol', 1e-7)
+        sttol = options.pop('sttol', 1e-6)
+        eqtol = options.pop('eqtol', 1e-7)
 
     fun_ = ft.update_wrapper(
         lambda x: np.apply_along_axis(fun, 1, x, *args), fun)
@@ -409,6 +413,6 @@ def minimize_pso(fun, x0, args=(), constraints=(), tol=None, callback=None,
             lambda x: np.apply_along_axis(callback, 1, x), callback)
 
     if constraints:
-        options['confunc'] = gen_confunc(constraints, **conargs)
+        options['confunc'] = gen_confunc(constraints, sttol, eqtol)
 
-    return pswarmopt(fun_, x0, **options)
+    return _minimize_pso(fun_, x0, **options)

@@ -47,11 +47,11 @@ References
 
 
 from .constraints import gen_confunc, init_feasible
-from .minimize import pswarmopt, minimize_pso
+from .minimize import minimize, _minimize_pso
 
 __all__ = [
     'gen_confunc',
     'init_feasible',
-    'minimize_pso',
-    'pswarmopt'
+    'minimize',
+    '_minimize_pso'
 ]

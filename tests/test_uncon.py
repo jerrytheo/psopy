@@ -1,5 +1,5 @@
 import numpy as np
-from psopy import minimize_pso
+from psopy import minimize
 
 
 class TestUnconstrained:
@@ -17,7 +17,7 @@ class TestUnconstrained:
                 np.exp(.5 * (np.cos(2*np.pi*x[0]) + np.cos(2*np.pi*x[1]))) + \
                 np.e + 20
 
-        res = minimize_pso(ackley, x0)
+        res = minimize(ackley, x0)
         converged = res.success
 
         assert converged, res.message
@@ -35,7 +35,7 @@ class TestUnconstrained:
             return sin3x + (x[0] - 1)**2 * (1 + sin3x) + \
                 (x[1] - 1)**2 * (1 + sin2y)
 
-        res = minimize_pso(levi, x0)
+        res = minimize(levi, x0)
         converged = res.success
 
         assert converged, res.message
