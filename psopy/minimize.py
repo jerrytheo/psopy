@@ -29,6 +29,7 @@ from scipy.spatial import distance
 from scipy.optimize import OptimizeResult
 
 from .constraints import gen_confunc
+from .utilities import setup_print
 
 
 STATUS_MESSAGES = namedtuple(
@@ -123,15 +124,17 @@ def _minimize_pso(
     array([ 1.39985398,  1.69992748])
 
     """
+    if verbose:
+        message = setup_print(x0.shape[1], max_iter, confunc is not None)
+
     position = np.copy(x0)
     velocity = np.random.uniform(-max_velocity, max_velocity, position.shape)
     pbest = np.copy(position)
     gbest = pbest[np.argmin(fun(pbest))]
+    oldfit = fun(gbest[None])[0]
     stable_count = 0
 
     for ii in range(max_iter):
-        oldfit = fun(gbest[None])[0]
-
         # Determine global and local gradient.
         dv_g = g_rate * uniform(0, 1) * (gbest - position)
         if confunc is not None:
@@ -156,12 +159,21 @@ def _minimize_pso(
             gbest = pbest[np.argmin(fun(pbest))]
 
         # Termination criteria.
-        if np.abs(oldfit - fun(gbest[None])[0]) < ptol:
+        fval = fun(gbest[None])[0]
+        if np.abs(oldfit - fval) < ptol:
             stable_count += 1
             if stable_count == stable_iter:
                 break
         else:
             stable_count = 0
+        oldfit = fval
+
+        if verbose:
+            if confunc is not None:
+                cv = np.max(confunc(gbest[None]))
+                print(message.format(ii, gbest, fval, cv))
+            else:
+                print(message.format(ii, gbest, fval))
 
         # Final callback.
         if callback is not None:
