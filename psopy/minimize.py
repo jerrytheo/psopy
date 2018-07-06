@@ -30,6 +30,7 @@ from scipy.optimize import OptimizeResult
 
 from .constraints import gen_confunc
 from .utilities import setup_print
+from .utilities import save_info
 
 
 STATUS_MESSAGES = namedtuple(
@@ -126,6 +127,8 @@ def _minimize_pso(
     """
     if verbose:
         message = setup_print(x0.shape[1], max_iter, confunc is not None)
+    if savefile:
+        iterinfo = []
 
     position = np.copy(x0)
     velocity = np.random.uniform(-max_velocity, max_velocity, position.shape)
@@ -168,16 +171,24 @@ def _minimize_pso(
             stable_count = 0
         oldfit = fval
 
-        if verbose:
+        if verbose or savefile:
+            info = [ii, gbest, fval]
             if confunc is not None:
                 cv = np.max(confunc(gbest[None]))
-                print(message.format(ii, gbest, fval, cv))
-            else:
-                print(message.format(ii, gbest, fval))
+                info.append(cv)
+
+            if verbose:
+                print(message.format(*info))
+
+            if savefile:
+                iterinfo.append(info)
 
         # Final callback.
         if callback is not None:
             position = callback(position)
+
+    if savefile:
+        save_info(savefile, iterinfo, constraints=confunc is not None)
 
     result = OptimizeResult(
         x=gbest, fun=fun(gbest[None])[0], nit=ii, nsit=stable_count)
