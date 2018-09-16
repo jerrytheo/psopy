@@ -41,7 +41,7 @@ class TestQuick:
                    'stable_iter': 50}
         sol = np.array([1.4, 1.7])
         res = minimize(lambda x: (x[0] - 1)**2 + (x[1] - 2.5)**2, x0,
-                           constraints=cons, options=options)
+                       constraints=cons, options=options)
         converged = res.success
         assert converged, res.message
         np.testing.assert_array_almost_equal(sol, res.x, 3)
