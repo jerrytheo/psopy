@@ -59,10 +59,10 @@ Consider the problem of minimizing the Rosenbrock function, implemented as
 ``scipy.optimize.rosen`` using a swarm of 1000 particles.
 
 >>> import numpy as np
->>> from psopy import minimize_pso
+>>> from psopy import minimize
 >>> from scipy.optimize import rosen
 >>> x0 = np.random.uniform(0, 2, (1000, 5))
->>> res = minimize_pso(rosen, x0, options={'stable_iter': 50})
+>>> res = minimize(rosen, x0, options={'stable_iter': 50})
 >>> res.x
 array([1.00000003, 1.00000017, 1.00000034, 1.0000006 , 1.00000135])
 
@@ -85,7 +85,7 @@ this function. Consult its documentation for more information.
 ...         {'type': 'ineq', 'fun': lambda x: x[1]})
 >>> from psopy import init_feasible
 >>> x0 = init_feasible(cons, low=0., high=2., shape=(1000, 2))
->>> res = minimize_pso(fun, x0, constrainsts=cons, options={
+>>> res = minimize(fun, x0, constrainsts=cons, options={
 ...     'g_rate': 1., 'l_rate': 1., 'max_velocity': 4., 'stable_iter': 50})
 >>> res.x
 array([ 1.39985398,  1.69992748])

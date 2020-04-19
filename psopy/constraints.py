@@ -28,7 +28,7 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
         -g(x) - eqtol <= 0
 
     Further, since SciPy uses inequality constraints of the form ``g(x) >= 0``,
-    these are converted to ``-g(x) <= 0`` as required by ``psopy.pswarmopt``.
+    these are converted to ``-g(x) <= 0`` as required by ``psopy._minimize_pso``.
 
     Parameters
     ----------
@@ -81,8 +81,8 @@ def gen_confunc(constraints, sttol=1e-6, eqtol=1e-7):
     where, ``g'_j`` is the wrapped function for constraint ``j``, ``x_i`` is
     the ``i`` th position vector.
 
-    This function is primarily for use within ``pso.minimize_pso`` to convert
-    SciPy style specified as::
+    This function is primarily for use within ``pso.minimize`` to convert SciPy
+    style specified as::
 
         g_j(x) >= 0,  i = 1,...,q
         h_k(x)  = 0,  j = 1,...,r

@@ -1,4 +1,5 @@
 .vscode/
+.ropeproject/
 .cache/
 *.pyc
 __pycache__/

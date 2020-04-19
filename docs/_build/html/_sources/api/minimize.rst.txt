@@ -1,0 +1,4 @@
+minimize
+========
+
+.. autofunction:: psopy.minimize

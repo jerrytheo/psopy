@@ -1,4 +1,0 @@
-pswarmopt
-=========
-
-.. autofunction:: psopy.pswarmopt

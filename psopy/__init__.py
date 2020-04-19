@@ -24,8 +24,8 @@ Functions
 ======================================================================
 gen_confunc         Generate the constraint function.
 init_feasible       Initialize feasible solutions.
-minimize_pso        SciPy compatible interface to ``pswarmopt``.
-pswarmopt           Optimize under constraints using a particle swarm.
+minimize            SciPy compatible interface to ``_minimize_pso``.
+_minimize_pso       Optimize under constraints using a particle swarm.
 =================== ==================================================
 
 -------------------------------------------------------------------------------
