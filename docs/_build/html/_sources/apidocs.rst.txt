@@ -10,8 +10,8 @@ Minimization Functions
 .. toctree::
    :maxdepth: 2
 
-   psopy.minimize_pso <api/minimize_pso>
-   psopy.pswarmopt <api/pswarmopt>
+   psopy.minimize <api/minimize>
+   psopy._minimize_pso <api/_minimize_pso>
 
 
 Compatibility Functions

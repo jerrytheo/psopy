@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>minimize &#8212; PSOPy 0.1.1b1 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tweaks.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="_minimize_pso" href="_minimize_pso.html" />
+    <link rel="prev" title="API Documentation" href="../apidocs.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          PSOPy</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="https://github.com/jerrytheo/psopy">GitHub</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">PSOPy Docs <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../readme/installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../readme/installation.html#github">GitHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readme/installation.html#pypi">PyPI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../readme/examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../readme/examples.html#unconstrained-optimization">Unconstrained Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readme/examples.html#constrained-optimization">Constrained Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../apidocs.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../apidocs.html#minimization-functions">Minimization Functions</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">psopy.minimize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_minimize_pso.html">psopy._minimize_pso</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../apidocs.html#compatibility-functions">Compatibility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gen_confunc.html">psopy.gen_confunc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="init_feasible.html">psopy.init_feasible</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../readme/references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="minimize">
+<h1>minimize<a class="headerlink" href="#minimize" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="psopy.minimize">
+<code class="sig-prename descclassname">psopy.</code><code class="sig-name descname">minimize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fun</span></em>, <em class="sig-param"><span class="n">x0</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">constraints</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">callback</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">options</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#psopy.minimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimization of scalar function of one or more variables using Particle
+Swarm Optimization (PSO).</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>fun</strong><span class="classifier">callable</span></dt><dd><p>The objective function to be minimized. Must be in the form
+<code class="docutils literal notranslate"><span class="pre">fun(x,</span> <span class="pre">*args)</span></code>. The optimizing argument, <code class="docutils literal notranslate"><span class="pre">x</span></code>, is a 1-D array of
+points, and <code class="docutils literal notranslate"><span class="pre">args</span></code> is a tuple of any additional fixed parameters
+needed to completely specify the function.</p>
+</dd>
+<dt><strong>x0</strong><span class="classifier">array_like of shape (N, D)</span></dt><dd><p>Initial position to begin PSO from, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of points
+and <code class="docutils literal notranslate"><span class="pre">D</span></code> the dimensionality of each point.</p>
+</dd>
+<dt><strong>args</strong><span class="classifier">tuple, optional</span></dt><dd><p>Extra arguments passed to the objective function.</p>
+</dd>
+<dt><strong>constraints</strong><span class="classifier">tuple</span></dt><dd><p>Constraints definition. Each constraint is defined in a dictionary with
+fields:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>type<span class="classifier">str</span></dt><dd><p>Constraint type. <code class="docutils literal notranslate"><span class="pre">scipy.optimize.minimize</span></code> defines ‘eq’ for
+equality and ‘ineq’ for inequality. Additionally, we define
+‘stin’ for strict inequality and ‘ltineq’ for less-than
+non-strict inequality.</p>
+</dd>
+<dt>fun<span class="classifier">callable</span></dt><dd><p>The function defining the constraint.</p>
+</dd>
+<dt>args<span class="classifier">sequence, optional</span></dt><dd><p>Extra arguments to be passed to the function.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Equality constraints require the constraint function result to be zero,
+strict inequality require it to be negative and inequality require it
+to be non-positive.</p>
+</dd>
+<dt><strong>tol</strong><span class="classifier">float, optional</span></dt><dd><p>Tolerance for termination and constraint adjustment. For granular
+control, use options.</p>
+</dd>
+<dt><strong>callback</strong><span class="classifier">callable, optional</span></dt><dd><p>Called after each iteration on each solution vector.</p>
+</dd>
+<dt><strong>options</strong><span class="classifier">dict, optional</span></dt><dd><p>A dictionary of solver options:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>friction<span class="classifier">float, optional</span></dt><dd><p>Velocity is scaled by friction before updating, default 0.8.</p>
+</dd>
+<dt>g_rate<span class="classifier">float, optional</span></dt><dd><p>Global learning rate, default 0.8.</p>
+</dd>
+<dt>l_rate<span class="classifier">float, optional</span></dt><dd><p>Local (or particle) learning rate, default 0.5.</p>
+</dd>
+<dt>max_velocity<span class="classifier">float, optional</span></dt><dd><p>Threshold for velocity, default 5.0.</p>
+</dd>
+<dt>max_iter<span class="classifier">int, optional</span></dt><dd><p>Maximum iterations to wait for convergence, default 1000.</p>
+</dd>
+<dt>stable_iter<span class="classifier">int, optional</span></dt><dd><p>Number of iterations to wait before Swarm is declared stable,
+default 100.</p>
+</dd>
+<dt>ptol<span class="classifier">float, optional</span></dt><dd><p>Change in position should be greater than <code class="docutils literal notranslate"><span class="pre">ptol</span></code> to update,
+otherwise particle is considered stable, default 1e-6.</p>
+</dd>
+<dt>ctol<span class="classifier">float, optional</span></dt><dd><p>Acceptable error in constraint satisfaction, default 1e-6.</p>
+</dd>
+<dt>sttol<span class="classifier">float, optional</span></dt><dd><p>Tolerance to convert strict inequalities to non-strict
+inequalities, default 1e-6.</p>
+</dd>
+<dt>eqtol<span class="classifier">float, optional</span></dt><dd><p>Tolerance to convert equalities to non-strict inequalities,
+default 1e-7.</p>
+</dd>
+<dt>verbose<span class="classifier">bool, optional</span></dt><dd><p>Set True to display convergence messages.</p>
+</dd>
+<dt>savefile<span class="classifier">string or None, optional</span></dt><dd><p>File to save global best solution vector and its corresponding
+function value for each iteration as a csv file. If None, no
+data is saved.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>result</strong><span class="classifier">scipy.optimize.OptimizeResult</span></dt><dd><p>The optimization result represented as a <code class="docutils literal notranslate"><span class="pre">OptimizeResult</span></code> object. The
+following keys are supported,</p>
+<blockquote>
+<div><dl class="simple">
+<dt>x<span class="classifier">array_like</span></dt><dd><p>The solution vector.</p>
+</dd>
+<dt>success<span class="classifier">bool</span></dt><dd><p>Whether or not the algorithm successfully converged.</p>
+</dd>
+<dt>status<span class="classifier">int</span></dt><dd><p>Termination status. 0 if successful, 1 if max. iterations
+reached, 2 if constraints cannot be satisfied.</p>
+</dd>
+<dt>message<span class="classifier">str</span></dt><dd><p>Description of the cause of termination.</p>
+</dd>
+<dt>nit<span class="classifier">int</span></dt><dd><p>Number of iterations performed by the swarm.</p>
+</dd>
+<dt>nsit<span class="classifier">int</span></dt><dd><p>Most recent number of iterations for which the algorithm
+remained stable.</p>
+</dd>
+<dt>fun<span class="classifier">float</span></dt><dd><p>Value of objective function for x.</p>
+</dd>
+<dt>cvec<span class="classifier">float</span></dt><dd><p>The constraint vector for x (only when constraints specified).</p>
+</dd>
+<dt>maxcv<span class="classifier">float</span></dt><dd><p>The maximum constraint violation.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="_minimize_pso.html#psopy._minimize_pso" title="psopy._minimize_pso"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psopy._minimize_pso</span></code></a></dt><dd><p>Internal implementation for PSO. May be faster to use directly.</p>
+</dd>
+<dt><a class="reference internal" href="gen_confunc.html#psopy.gen_confunc" title="psopy.gen_confunc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psopy.gen_confunc</span></code></a></dt><dd><p>Converts the constraints definition to a function that returns the constraint matrix when run on the position matrix.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Particle Swarm Optimization (PSO) <a class="reference internal" href="#red74a8c52cb7-1" id="id1">[1]</a> is a biologically inspired
+metaheuristic for finding the global minima of a function. It works by
+iteratively converging a population of randomly initialized solutions,
+called particles, toward a globally optimal solution. Each particle in the
+population keeps track of its current position and the best solution it has
+encountered, called <code class="docutils literal notranslate"><span class="pre">pbest</span></code>. Each particle has an associated
+velocity used to traverse the search space. The swarm keeps track of the
+overall best solution, called <code class="docutils literal notranslate"><span class="pre">gbest</span></code>. Each iteration of the swarm
+updates the velocity of the particle toward a weighted sum of the <code class="docutils literal notranslate"><span class="pre">pbest</span></code>
+and <code class="docutils literal notranslate"><span class="pre">gbest</span></code>. The velocity of the particle is then added to the position
+of the particle.</p>
+<p>Shi and Eberhart <a class="reference internal" href="#red74a8c52cb7-2" id="id2">[2]</a> describe using an inertial weight, or a friction
+parameter, to balance the effect of the global and local search. This acts
+as a limiting factor to ensure velocity does not increase, or decrease,
+unbounded.</p>
+<p><strong>Constrained Optimization</strong></p>
+<p>The standard PSO algorithm does not guarantee that the individual solutions
+will converge to a feasible global solution. To solve this, Lorem and Ipsum
+<a class="reference internal" href="#red74a8c52cb7-3" id="id3">[3]</a> suggested an approach where each particle selects another particle,
+called the leader and uses this particle’s <code class="docutils literal notranslate"><span class="pre">pbest</span></code> value, instead of its
+own, to update its velocity. The leader for a given particle is selected by
+picking the particle whose <code class="docutils literal notranslate"><span class="pre">pbest</span></code> is closest to the current position of
+the given particle. Further, <code class="docutils literal notranslate"><span class="pre">pbest</span></code> is updated only those particles
+where the sum of the constraint vector is less than the constraint
+tolerance.</p>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="red74a8c52cb7-1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Eberhart, R. and Kennedy, J., 1995, October. A new optimizer
+using particle swarm theory. In Micro Machine and Human Science, 1995.
+MHS‘95., Proceedings of the Sixth International Symposium on (pp.
+39-43). IEEE.</p>
+</dd>
+<dt class="label" id="red74a8c52cb7-2"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Shi, Y. and Eberhart, R., 1998, May. A modified particle swarm
+optimizer. In Evolutionary Computation Proceedings, 1998. IEEE World
+Congress on Computational Intelligence., The 1998 IEEE International
+Conference on (pp. 69-73). IEEE.</p>
+</dd>
+<dt class="label" id="red74a8c52cb7-3"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
+volutpat feugiat imperdiet. Phasellus placerat elit nec erat tristique
+faucibus. Suspendisse at nunc odio. Nullam sagittis nunc ut sed.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Let us consider the problem of minimizing the Rosenbrock function,
+implemented as <code class="docutils literal notranslate"><span class="pre">scipy.optimize.rosen</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">psopy</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">rosen</span>
+</pre></div>
+</div>
+<p>Initialize 1000 particles and run the minimization function:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">rosen</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;stable_iter&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">x</span>
+<span class="go">array([1.00000003, 1.00000017, 1.00000034, 1.0000006 , 1.00000135])</span>
+</pre></div>
+</div>
+<p>Next, we consider a minimization problem with several constraints. The
+objective function is:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>The constraints defined as:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cons</span> <span class="o">=</span> <span class="p">({</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>  <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">6</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ineq&#39;</span><span class="p">,</span> <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+</pre></div>
+</div>
+<p>The intial positions for constrained optimization must adhere to the
+constraints imposed by the problem. This can be ensured using the provided
+function <code class="docutils literal notranslate"><span class="pre">psopy.init_feasible</span></code>. Note, there are several caveats regarding
+the use of this function. Consult its documentation for more information.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">psopy</span> <span class="kn">import</span> <span class="n">init_feasible</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">init_feasible</span><span class="p">(</span><span class="n">cons</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Running the constrained version of the function:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">constrainsts</span><span class="o">=</span><span class="n">cons</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;g_rate&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s1">&#39;l_rate&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s1">&#39;max_velocity&#39;</span><span class="p">:</span> <span class="mf">4.</span><span class="p">,</span> <span class="s1">&#39;stable_iter&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">x</span>
+<span class="go">array([ 1.39985398,  1.69992748])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+    </div>
+    
+  <div class="col-md-3">
+    <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">minimize</a></li>
+</ul>
+
+<li>
+  <a href="../apidocs.html" title="Previous Chapter: API Documentation">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+    <span class="hidden-sm hidden-tablet">API Documentation</span>
+  </a>
+</li>
+<li>
+  <a href="_minimize_pso.html" title="Next Chapter: _minimize_pso">
+    <span class="glyphicon glyphicon-chevron-right"></span>
+    <span class="hidden-sm hidden-tablet">_minimize_pso</span>
+  </a>
+</li>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+    </div>
+  </div>
+
+  </div>
+</div>
+  <footer class="footer">
+    <div class="container">
+      <p class="pull-right">
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+      </p>
+      <p>
+        &copy; Copyright 2018, Abhijit Theophilus, Snehanshu Saha, Suryoday Basak.
+      </p>
+    </div>
+  </footer>
+
+  </body>
+</html>

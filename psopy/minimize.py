@@ -3,7 +3,7 @@ minimize.py - SciPy Compatible PSO Solver for Minimization
 ==========================================================
 
 The implementation of the Particle Swarm Optimization solver. The function
-``psopy.minimize_pso`` mimics the interface of ``scipy.optimize.minimize``,
+``psopy.minimize`` mimics the interface of ``scipy.optimize.minimize``,
 excluding the ``method`` parameter.
 
 ``psopy.minimize`` calls the function ``psopy._minimize_pso`` to actually
@@ -78,8 +78,8 @@ def _minimize_pso(
 
     Examples
     --------
-    These examples are identical to those laid out in ``psopy.minimize_pso``
-    and serve to illustrate the additional overhead in ensuring compatibility.
+    These examples are identical to those laid out in ``psopy.minimize`` and
+    serve to illustrate the additional overhead in ensuring compatibility.
 
     >>> import numpy as np
     >>> from psopy import _minimize_pso
@@ -370,13 +370,13 @@ def minimize(fun, x0, args=(), constraints=(), tol=None, callback=None,
     implemented as ``scipy.optimize.rosen``.
 
     >>> import numpy as np
-    >>> from psopy import minimize_pso
+    >>> from psopy import minimize
     >>> from scipy.optimize import rosen
 
     Initialize 1000 particles and run the minimization function:
 
     >>> x0 = np.random.uniform(0, 2, (1000, 5))
-    >>> res = minimize_pso(rosen, x0, options={'stable_iter': 50})
+    >>> res = minimize(rosen, x0, options={'stable_iter': 50})
     >>> res.x
     array([1.00000003, 1.00000017, 1.00000034, 1.0000006 , 1.00000135])
 
@@ -403,7 +403,7 @@ def minimize(fun, x0, args=(), constraints=(), tol=None, callback=None,
 
     Running the constrained version of the function:
 
-    >>> res = minimize_pso(fun, x0, constrainsts=cons, options={
+    >>> res = minimize(fun, x0, constrainsts=cons, options={
     ...     'g_rate': 1., 'l_rate': 1., 'max_velocity': 4., 'stable_iter': 50})
     >>> res.x
     array([ 1.39985398,  1.69992748])
